@@ -70,3 +70,5 @@ import QSVT.Qubit.RegBridge
 import QSVT.Certificate.RectExample
 import QSVT.Examples.Threshold
 import QSVT.QSP.Complementary
+import QSVT.Examples.Compose
+import QSVT.Examples.EvolutionAA
