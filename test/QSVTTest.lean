@@ -9,6 +9,10 @@ import QSVTTest.Chebyshev
 import QSVTTest.Encoding
 import QSVTTest.EigenBasis
 import QSVTTest.Polynomial
+import QSVTTest.TwoVector
+import QSVTTest.QET
+import QSVTTest.SVTransform
+import QSVTTest.LCU
 
 /-!
 # QSVTTest
