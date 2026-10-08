@@ -24,6 +24,7 @@ import QSVTTest.IR
 import QSVTTest.Certificate
 import QSVTTest.Examples
 import QSVTTest.PhaseCheck
+import QSVTTest.CosExample
 
 /-!
 # QSVTTest
