@@ -27,3 +27,8 @@ auto-res/lean-qsvt-dev
 に transfer しました．
 
 今後は ss branch で開発を続けてください．
+00note/prompt.md は ss branch のみに置いてください．
+
+subagent を使ってトークンを節約しつつ効率的に開発を進めてください．
+lean project は cache を利用してビルド時間の短縮を図ってください．
+必要に応じて LeanArchitect などの開発支援ツールを利用してください．今回は形式化が目的ではないので，別のツールがよいかもしれません．

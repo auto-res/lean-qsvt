@@ -1,0 +1,37 @@
+/-
+Copyright (c) 2026 shosonoda. All rights reserved.
+Released under MIT license as described in the file LICENSE.
+Authors: shosonoda
+-/
+import QSVT
+
+/-!
+# QSVTTest
+
+Regression tests for `lean-qsvt`. Run with `lake test`.
+Each check is a compile-time assertion (`#guard` / `example`), so a failing test
+breaks the build of this library.
+-/
+
+-- `#guard` / `#print axioms` are the whole point of a test file.
+set_option linter.hashCommand false
+
+open QSVT.QSP in
+/-- `seqR` on the empty phase list is the identity. -/
+example (x : ℝ) : seqR [] x = 1 := seqR_nil x
+
+open QSVT.QSP in
+/-- `phaseZ 0` is the identity. -/
+example : phaseZ 0 = 1 := phaseZ_zero
+
+#guard (List.range 4).map (fun k => k % 2 == 0) = [true, false, true, false]
+
+/-! ### Axiom audit: the library must not introduce axioms beyond Lean's standard three. -/
+
+/-- info: 'QSVT.QSP.seqR_mem_unitaryGroup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms QSVT.QSP.seqR_mem_unitaryGroup
+
+/-- info: 'QSVT.Poly.evenPart_add_oddPart' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms QSVT.Poly.evenPart_add_oddPart

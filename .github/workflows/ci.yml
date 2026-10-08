@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (lake build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Lean project with Mathlib cache
+        # leanprover/lean-action@v1 pinned to a specific sha for reproducibility.
+        uses: leanprover/lean-action@434f25c2f80ded67bba02502ad3a86f25db50709
+        with:
+          use-mathlib-cache: true
+          build: true
+          test: true
+          lint: false
+
+  no-sorry:
+    name: No sorry in QSVT/
+    runs-on: ubuntu-latest
+    # Early development may contain `sorry`; this job reports them without blocking.
+    # Flip `continue-on-error` to false once the library is sorry-free.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fail if any `sorry` appears under QSVT/
+        run: |
+          if grep -rn --include='*.lean' -w "sorry" QSVT QSVT.lean; then
+            echo "::error::Found 'sorry' in the QSVT library (listed above)."
+            exit 1
+          fi
+          echo "No 'sorry' found in QSVT/."

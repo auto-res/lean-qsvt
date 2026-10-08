@@ -1,2 +1,6 @@
 # cache and other artifacts produced by Lean's Lake build tool
 .lake/
+*.olean
+.DS_Store
+site/
+__pycache__/
