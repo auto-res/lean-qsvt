@@ -4,23 +4,26 @@ Released under MIT license as described in the file LICENSE.
 Authors: shosonoda
 -/
 import QSVT.Certificate.PhaseCheck
+import QSVT.Certificate.Sign21Phases
 
 /-!
 # QSVTTest.PhaseCheck
 
 Regression tests for the QSP phase certificate checker (formal-spec CERT-B, part 2):
 `#eval`/`#guard` checks of the interval layer, kernel-checked instances of `check`/`checkRe`
-(`decide +kernel`) from degree 1 to degree 21, their transfer through `check_sound`/
-`checkRe_sound` to statements about `qspPoly`, and the axiom audit (kernel trust: no
+(`decide +kernel`) from degree 1 to degree 5, their transfer through `check_sound`/
+`checkRe_sound` to statements about `qspPoly`, the transfer of the degree-21 library certificate
+`sign21_checkRe` (`QSVT.Certificate.Sign21Phases`), and the axiom audit (kernel trust: no
 `Lean.ofReduceBool`).
 
 Kernel timings (Apple-silicon laptop, `decide +kernel`, exact rational arithmetic):
 degree 1–3 with phases `0`: 0.2 s; degree 2 with phases `[1/3, -1/3]` (Taylor depth 20): 0.35 s;
 degree 5 (QSPPACK phases for `T₅`, depth 20): 0.9 s each; degree 21 (QSPPACK phases for the sign
 approximation): 40 s at depth 24 (`ε = 1e-10`), 45 s at depth 30 (`ε = 1e-12`,
-`sign21_checkRe`).  The Taylor depth must grow with the phase magnitude: for the degree-21 phases
-(`|φ| ≤ 2.31`) the real-part bound `errBoundRe` is `8.2e-7` at depth 20, `5.4e-11` at depth 24
-and `7.9e-14` at depth 30.
+`sign21_checkRe`, kept in the library module `QSVT.Certificate.Sign21Phases` together with its
+data `sign21Phases`/`sign21Target`).  The Taylor depth must grow with the phase magnitude: for
+the degree-21 phases (`|φ| ≤ 2.31`) the real-part bound `errBoundRe` is `8.2e-7` at depth 20,
+`5.4e-11` at depth 24 and `7.9e-14` at depth 30.
 -/
 
 -- `#guard` / `#print axioms` are the whole point of a test file.
@@ -115,47 +118,20 @@ example : supNorm ((qspPoly (t5PhasesR.map (↑))).1 - ChebC.target [0, 0, 0, 0,
   supNorm_sound t5_check
 
 /-! ### Degree 21: QSPPACK phases for the sign approximation
-(`tools/phases/examples/sign21_qsppack.json`) -/
-
-/-- The reflection-convention phases `phases_R_dyadic` of `sign21_qsppack.json` (exact dyadic
-rationals, reduced mod `2π`). -/
-def sign21PhasesR : List ℚ :=
-  [215730704601777 / 140737488355328, -3483537972770937 / 2251799813685248,
-   -7209831662386485 / 4503599627370496, -6901305567289623 / 4503599627370496,
-   -7296699691818309 / 4503599627370496, -6784661288090225 / 4503599627370496,
-   -3729219811284745 / 2251799813685248, -1636729195328927 / 1125899906842624,
-   -3923397093034391 / 2251799813685248, -2883881419528359 / 2251799813685248,
-   -5199479559502869 / 2251799813685248, -5199479559502869 / 2251799813685248,
-   -2883881419528359 / 2251799813685248, -3923397093034391 / 2251799813685248,
-   -1636729195328927 / 1125899906842624, -3729219811284745 / 2251799813685248,
-   -6784661288090225 / 4503599627370496, -7296699691818309 / 4503599627370496,
-   -6901305567289623 / 4503599627370496, -7209831662386485 / 4503599627370496,
-   -3483537972770937 / 2251799813685248]
-
-/-- The `target_chebyshev_coeffs` of `sign21_qsppack.json`: the odd degree-21 Chebyshev
-approximation of `sign x` (the same polynomial as `QSVT.Certificate.sign21`, in the Chebyshev
-basis), as exact rationals. -/
-def sign21Cheb : List ℚ :=
-  [0, 5104259128596299 / 4503599627370496, 0, -1667563197230541 / 4503599627370496,
-   0, 7688981794739765 / 36028797018963968, 0, -5170919160542979 / 36028797018963968,
-   0, 7422883927095795 / 72057594037927936, 0, -5493494299215661 / 72057594037927936,
-   0, 1030359789386511 / 18014398509481984, 0, -3104546081626977 / 72057594037927936,
-   0, 2334045259532281 / 72057594037927936, 0, -6978069399079591 / 288230376151711744,
-   0, 5171055401310877 / 288230376151711744]
-
-/-- `‖Re P_Φ̃ − ∑ₖ tₖ Tₖ‖ ≤ 10⁻¹²` for the degree-21 sign approximation, kernel-checked with
-Taylor depth 30 (about 45 s; `errBoundRe ≈ 7.9e-14`).  The complex check `check` fails here, as
-for every solver output: `Im P_Φ̃` is of order `0.7` and only `Re P_Φ̃` is fitted. -/
-theorem sign21_checkRe : checkRe sign21PhasesR sign21Cheb (1 / 1000000000000) 30 = true := by
-  decide +kernel
+(`tools/phases/examples/sign21_qsppack.json`; data and kernel certificate `sign21_checkRe` in
+`QSVT.Certificate.Sign21Phases`, about 45 s at Taylor depth 30) -/
 
 -- the certified statement about `qspPoly`: `|Re P_Φ̃(x) − ∑ₖ tₖ Tₖ(x)| ≤ 10⁻¹²` on `[-1, 1]`
 example : ∀ x ∈ Set.Icc (-1 : ℝ) 1,
-    |((qspPoly (sign21PhasesR.map (↑))).1.eval (x : ℂ)).re -
-      ∑ k ∈ Finset.range sign21Cheb.length,
-        (sign21Cheb.getD k 0 : ℝ) * (Polynomial.Chebyshev.T ℝ k).eval x| ≤
-      ((1 / 1000000000000 : ℚ) : ℝ) :=
+    |((qspPoly (sign21Phases.map (↑))).1.eval (x : ℂ)).re -
+      ∑ k ∈ Finset.range sign21Target.length,
+        (sign21Target.getD k 0 : ℝ) * (Polynomial.Chebyshev.T ℝ k).eval x| ≤
+      (sign21Eps : ℝ) :=
   checkRe_sound_real sign21_checkRe
+
+-- the certificate is about the phases of length `21` and the `22` target coefficients
+#guard sign21Phases.length = 21
+#guard sign21Target.length = 22
 
 /-! ### Axiom audit: kernel-checked certificates use only the standard three axioms -/
 
@@ -195,6 +171,6 @@ example : ∀ x ∈ Set.Icc (-1 : ℝ) 1,
 #guard_msgs in
 #print axioms t5_checkRe
 
-/-- info: 'sign21_checkRe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'QSVT.Certificate.sign21_checkRe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms sign21_checkRe

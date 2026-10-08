@@ -25,6 +25,7 @@ import QSVTTest.Certificate
 import QSVTTest.Examples
 import QSVTTest.PhaseCheck
 import QSVTTest.CosExample
+import QSVTTest.Sign21RouteB
 
 /-!
 # QSVTTest
