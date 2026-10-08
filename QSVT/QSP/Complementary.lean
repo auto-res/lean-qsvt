@@ -13,7 +13,7 @@ import QSVT.SVT.RealPoly
 /-!
 # Complementary polynomials (formal-spec QSP-7a/7b/7d; GSLW Lemma 6, Theorem 5, Cor 10)
 
-Everything in this file is fully proved (no `sorry`, standard axioms only).
+Everything in this file is fully proved (no unproved statements, standard axioms only).
 
 **Main results.**
 

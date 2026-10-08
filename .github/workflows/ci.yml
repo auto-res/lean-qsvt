@@ -32,9 +32,8 @@ jobs:
   no-sorry:
     name: No sorry in QSVT/
     runs-on: ubuntu-latest
-    # Early development may contain `sorry`; this job reports them without blocking.
-    # Flip `continue-on-error` to false once the library is sorry-free.
-    continue-on-error: true
+    # The library is sorry-free (since 2026-10-09); any `sorry` under QSVT/ fails CI.
+    continue-on-error: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4

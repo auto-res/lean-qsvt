@@ -50,6 +50,7 @@ lake test            # test/ 以下のテストをビルド
 | Chebyshev の閉形式位相（GSLW Lemma 9） | `seqR_chebPhases_eq` | `QSVT/QSP/Chebyshev.lean` |
 | 回転規約↔反射規約（GSLW Cor 8 の対応，式 (16) の符号修正済） | `seqW_eq_seqR`, `seqW_apply_zero_zero_eq` | `QSVT/QSP/Conversion.lean` |
 | 位相の存在（GSLW Thm 3 ⇐） | `exists_phases`, `exists_phases_R` | `QSVT/QSP/Existence.lean` |
+| 相補多項式の存在（GSLW Lemma 6，Thm 5，Cor 10）: 許容な実多項式は位相列で実現可能 | `exists_sumsq_decomposition`, `exists_complement`, `exists_phases_real` | `QSVT/QSP/Complementary.lean` |
 | **QET**: $P\,U_\Phi\,P = P_\Phi(A)\,P$（Hermitian ブロック符号化，SVD 不要） | `qet`, `qet_chebyshev` | `QSVT/SVT/QET.lean` |
 | **QSVT（GSLW Thm 17）**: $\tilde\Pi\,U_\Phi\,\Pi = P_\Phi^{(SV)}(A)$（一般の射影ユニタリ符号化，SVD 不要） | `qsvt_odd`, `qsvt_even` | `QSVT/SVT/QSVT.lean` |
 | 実多項式版（GSLW Cor 18）と合成子 `qsvtReal` | `qet_real`, `qsvtReal_encoded` | `QSVT/SVT/RealPoly.lean` |

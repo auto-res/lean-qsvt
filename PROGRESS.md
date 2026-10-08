@@ -3,6 +3,15 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (7) — 相補多項式の存在（GSLW Lemma 6・Thm 5・Cor 10）
+
+- `QSP/Complementary.lean`: Lemma 6 を GSLW の大域的な根の分解ではなく，述語 `SOSRep k A`（$A=B^2+(1-x^2)C^2$ と次数・parity）の積閉性
+  （Brahmagupta–Fibonacci 恒等式）と，複素根 $s$ の $s^2$ による 3 分類（非実: 4 次因子，実で $(0,1)$ 外: 2 次因子，$(0,1)$ 内: 符号変化論法で重根）
+  の強帰納法で証明．Thm 5（実版）と Cor 10 を導出し，`exists_phases` と合わせて「許容な実多項式は必ず位相列で実現できる」が Lean で閉じた．
+- CI の `no-sorry` ジョブを失敗扱いに変更（ライブラリは sorry なし）．
+- 規模: Lean 約 22,300 行．GSLW 3.1 節（Thm 3–5，Lemma 6，Cor 8–10），3.2 節（Thm 17，Cor 18，Lemma 19）が形式化済み．
+- 残り: Thm 4 の必要性方向，近似次数の漸近定理（Lemma 25/29/40），振幅増幅との結合（Thm 41/58 の残り），IR の `prod`．
+
 ## 2026-10-09 (6) — 閾値射影，ループ例，符号化の積，$k$ qubit レジスタ，CLI
 
 - **APP-2 閾値射影**: 次数 32 の偶多項式（LP で証明書余裕を最大化），3 つの kernel 証明書（各 35–55 s），`Examples/Threshold.lean`（固有値の窓フィルタ，528 クエリ）．

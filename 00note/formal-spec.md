@@ -18,7 +18,7 @@
 | QSP-3 | 済 | `QSP/Poly.lean`（`qspPoly4`，`qspPoly`，`conjP`，`negX`），`QSP/Structure.lean`（`seqR_eval4`，`seqR_eval`，`natDegree_*_le`，`hasParity_*`，`norm_identity`，`qspPoly_neg`，`seqR_apply_zero_zero/one_zero`） |
 | QSP-4 | 済 | `QSP/Chebyshev.lean`: `chebPhases`，`seqR_chebPhases_eq`（全行列，$d\ge 0$），`seqR_chebPhases` |
 | QSP-5 | 済 | `QSP/Endpoints.lean`: `seqR_one`，`seqR_neg_one`，`alt`，`seqR_zero_of_even/odd` |
-| QSP-7 | 一部済 | `QSP/PolyW.lean`（回転規約の再帰 `qspPolyW`，`seqW_eval`），`QSP/Existence.lean`（**`exists_phases`**: Thm 3 ⇐ を次数降下の帰納法で一般に証明，`exists_phases_R`）．相補多項式の存在（Thm 4，Lemma 6: 根の分解）は未着手 |
+| QSP-7 | 済 | `QSP/PolyW.lean`（`qspPolyW`，`seqW_eval`），`QSP/Existence.lean`（**`exists_phases`**: Thm 3 ⇐），`QSP/Complementary.lean`（**Lemma 6 `exists_sumsq_decomposition`**: 非負偶多項式 $A=B^2+(1-x^2)C^2$，平方和表現 `SOSRep` の積閉性と根の 3 分類による帰納法；**Thm 5 `exists_complement`**，**Cor 10 `exists_phases_real`/`exists_phases_R_real`**: $[-1,1]$ で $|\tilde P|\le1$ の parity 付き実多項式は反射規約の位相列で $\Re$ として実現可能）．Thm 4 の必要性方向は未 |
 | ENC-1 | 済 | `Encoding/Projected.lean`: 射影のフィールド名は `P`（$\Pi$），`P'`（$\tilde\Pi$）．`Π` は Lean の識別子に使えない．`HermitianEncoding`（`P'_eq`，`encoded_selfAdjoint`） |
 | ENC-2/3 | 済 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`，2×2 ブロック作用素 `block`，`blockDiag`，`topLeft`，`anc0`，`hadA`，`lcu2`（`Ancilla.lean`，`LCU.lean`）．$m$ レジスタは `Reg m ℋ := PiLp 2 (fun _ : Fin m => ℋ)`，`matOp`，`selectOp`，`regTopLeft`，`reg0`，`lcu V W`，Householder 状態準備 `householder`，`lcu_complex`（`Register.lean`，`LCUm.lean`）．テンソル積は回路層まで使わない |
 | SVT-1/2 | 済 | `SVT/AltSeq.lean`（`altSeq`，`altSeq_mem_unitary`，`altSeq_one/two/three`），`SVT/PhaseOp.lean` |
