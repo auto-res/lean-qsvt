@@ -23,6 +23,7 @@ import QSVTTest.Existence
 import QSVTTest.IR
 import QSVTTest.Certificate
 import QSVTTest.Examples
+import QSVTTest.PhaseCheck
 
 /-!
 # QSVTTest
