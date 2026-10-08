@@ -3,6 +3,22 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (3) — Route B 完成（M4），証明書付き応用例 2 件
+
+- **CERT-B 完成**: LeanCert v4.34.1 を依存に追加（`lake update leancert` 11 s，LeanCert ソースビルド 3 分 22 秒，以後キャッシュ）．
+  - B1 `Certificate/Bound.lean`, `Sign21.lean`: 明示多項式の区間評価を `leancert (trust := kernel)`（Bernstein 証明書，`decide +kernel`）で証明．
+    次数 21 の符号関数近似（qsppack の目標多項式）: $[-1,1]$ で $|p|\le1$（25 s），$[0.15,1]$ で $|p-c|\le0.0236$（40 s），$c\approx0.8924$．
+  - B2 `ChebC.lean`, `PhaseCheck.lean`: `qspPoly` の Chebyshev 基底再帰を ℂ 上（仕様層）と `IntervalRat` 上（計算層）で定義し，
+    `checkRe Φ̃ t ε n : Bool` と健全性 `checkRe_sound`（$\|\Re P_{\tilde\Phi}-\sum t_kT_k\|_\infty\le\varepsilon$）．次数 21 の位相で $\varepsilon=10^{-12}$ を kernel 45 s で検査．
+    注: ソルバー出力は $\Re P$ のみ目標に合う（$\Im P\approx0.7$）ので実部版 `checkRe` が本命．
+- **APP-1**: `Examples/Sign21.lean`（Route A, 231 クエリ）と **`Examples/Sign21RouteB.lean`（Route B, 21 クエリ・補助 1 qubit）**．
+  固有値 $\lambda\ge0.15$ の固有ベクトルは $\pm c$ 倍に $10^{-12}+0.0236$ 以内（`signB_apply_pos`）．資源数は `compileQsvtReal` の定理から（oracle 21，$C_\Pi$NOT 42，位相 21，H 2）．
+- **APP-4-lite**: `Certificate/CosExample.lean`, `Examples/CosEvolution.lean`: $\cos 2x$ の次数 10 近似（Jacobi–Anger）．LeanCert は `Real.cos` との差を直接は証明できず
+  （区間演算の依存問題），次数 16 の Taylor 多項式を橋渡しにして Mathlib の `Complex.exp_bound'` で閉じた．全固有ベクトルで $10^{-6}$ 以内，55 クエリ．
+- 規模: Lean 約 13,000 行，sorry なし，公理は標準 3 つ．`lake build` 全体 3838 ジョブ（増分 6 s，証明書モジュールは 45 s）．
+- 進行中: `Qubit/`（qubit レジスタ `Fin n → Bool` と `Anc`/`Reg` の等長同型，ゲート，$C_\Pi$NOT の多重制御 X への対応）．
+- 次: 複素 LCU で $e^{-itA}$（sin 部），ENC-4 積と IR の `prod`，qubit 回路の OpenQASM 出力，固定点振幅増幅（Thm 27）の定式化．
+
 ## 2026-10-09 (2) — Route A 完成（M3），IR・回路層・存在定理，Route B 着手
 
 - **CERT-A `routeA`**（`QSVT/Pipeline/ChebLCU.lean`）: 計算可能な入力 `PolyQC` → Chebyshev 係数 → 各 $T_k$ を閉形式位相の QET で実装 →

@@ -22,6 +22,9 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
   - `QSVT/Pipeline/` — Route A（Chebyshev-LCU による exact なパイプライン，`routeA`）
   - `QSVT/Circuit/` — $C_\Pi\mathrm{NOT}$ ガジェット（GSLW Lemma 19），原始ゲート列と資源数
   - `QSVT/IR/` — 抽象プログラム IR（`Expr`，`denote`，`spec`，健全性，クエリ数）
+  - `QSVT/Certificate/` — LeanCert による証明書（明示多項式の区間評価，位相列の Chebyshev 係数検査器）
+  - `QSVT/Examples/` — 応用例（符号関数近似の Route A / Route B 実装，$\cos 2A$）
+  - `QSVT/Qubit/` — qubit レジスタと直和モデルの橋渡し（進行中）
 - `test/` — 回帰テスト（`lake test`）
 - `00note/` — 計画・仕様・調査メモ
 - `tools/` — 位相角ソルバーなどの外部ツール（untrusted）
@@ -33,6 +36,7 @@ Lean ツールチェーンは `lean-toolchain`（`leanprover/lean4:v4.34.1`）�
 
 ```sh
 lake exe cache get   # Mathlib のビルド済みキャッシュを取得（必須．ソースからビルドしない）
+                     # LeanCert（検証付き数値計算）は初回のみソースからビルドされる（約 3–5 分）
 lake build           # QSVT ライブラリをビルド
 lake test            # test/ 以下のテストをビルド
 ```
@@ -51,6 +55,11 @@ lake test            # test/ 以下のテストをビルド
 | $m$ 項 LCU と Householder 状態準備 | `topLeft_lcu`, `lcu_complex` | `QSVT/Encoding/LCUm.lean` |
 | **Route A**: 計算可能な入力多項式 $f$ から $f(A)P/\|c\|_1$ の符号化（exact） | `routeA` | `QSVT/Pipeline/ChebLCU.lean` |
 | 位相作用素のガジェット（GSLW Lemma 19）と資源数 | `gadget_eq`, `denote_compileQsvtReal`, `oracleCount_compileAltSeq` | `QSVT/Circuit/` |
+| 抽象 IR の健全性（符号化の合成と圧縮） | `compress_aeval_mul_P`, `base_eq_smul` | `QSVT/IR/Sound.lean` |
+| 位相列の証明書検査器（kernel で評価可）と健全性 | `checkRe`, `checkRe_sound` | `QSVT/Certificate/PhaseCheck.lean` |
+| 次数 21 の符号関数近似の証明書（LeanCert，kernel） | `supNorm_sign21_le_one`, `norm_eval_sign21_sub_scale_le`, `sign21_checkRe` | `QSVT/Certificate/Sign21*.lean` |
+| **Route B**: 21 クエリ・補助 1 qubit で符号関数近似を実装 | `signB_apply_pos`, `signB_oracleCount` | `QSVT/Examples/Sign21RouteB.lean` |
+| $\cos(2A)$ の近似（Hamiltonian simulation の実部） | `cosCircuit_apply` | `QSVT/Examples/CosEvolution.lean` |
 
 ### 使い方の例（Route A，概略．厳密な形は `test/QSVTTest/ChebLCU.lean` を参照）
 
