@@ -28,6 +28,7 @@ import QSVTTest.CosExample
 import QSVTTest.Sign21RouteB
 import QSVTTest.Qubit
 import QSVTTest.Evolution
+import QSVTTest.QubitCompile
 
 /-!
 # QSVTTest
