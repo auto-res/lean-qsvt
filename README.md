@@ -70,6 +70,7 @@ lake build QSVTHeavy # 数分かかる kernel 証明書（既定では省略）
 | qubit 回路へのコンパイルの正しさと OpenQASM 3 出力 | `compileQ_qsvtReal`, `toQasm` | `QSVT/Qubit/Compile.lean`, `Qasm.lean` |
 | 固定点振幅増幅（GSLW Thm 27）: 初期重なり $\ge0.15$ から成功振幅 $\ge0.869$，21 クエリ | `fixedPointAA_amplitude` | `QSVT/Examples/FixedPointAA.lean` |
 | 線形方程式の多項式ステップ（$\kappa=4$，相対誤差 $10^{-3}$） | `invCircuit_apply_pos` | `QSVT/Examples/Inverse.lean` |
+| 線形方程式 + 固定点振幅増幅（GSLW Thm 41 相当，成功振幅 $\ge0.975$，誤差 $\le0.02$；`QSVTHeavy`） | `inverseAA_amplitude`, `inverseAA_output` | `QSVTHeavy/InverseAA.lean` |
 | 表面構文で書いたプログラムの正しさとコスト | `baseQ_eq`, `queriesQ_eq` | `QSVT/Lang/ExprQ.lean` |
 | 閾値射影（固有値の窓フィルタ，GSLW Thm 31） | `rectCircuit_apply_inner`, `rectCircuit_apply_outer` | `QSVT/Examples/Threshold.lean` |
 | ループ: 反復 QSVT のコストと意味，二分探索スケルトン | `queriesQ_qsvtIter`, `spec_toExpr_qsvtIter`, `bisect_mem_Icc` | `QSVT/Lang/Loop.lean`, `QSVT/Examples/Loop.lean` |

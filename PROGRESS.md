@@ -3,6 +3,13 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (9) — 線形方程式 + 固定点振幅増幅（Thm 41 相当，heavy）
+
+- `QSVTHeavy/FixedPointAAD01.lean`: $\delta=0.1$ の証明済み位相（35 個）による固定点 AA（plateau $0.9755$）．
+- `QSVTHeavy/InverseAA.lean`: 擬似逆ブロック（435 クエリ）+ AA（35 回）．スペクトル台が $|\lambda|\ge1/4$ の $b$ に対し，初期振幅 $\approx0.112\ge0.1$，
+  成功振幅 $\ge0.975$（確率 $\ge0.95$），良い成分は正規化した $A^{-1}b$ の $c$ 倍（$c=79/80$）に $0.02$ 以内．`encoded_idealInv` で理想状態が $A^{-1}b$ に比例することを証明．15,225 クエリ．
+- これで GSLW の主要応用（Thm 27, 31, 41, 58）がすべて「証明書 + 定理」の形で揃った（定数は近似多項式の plateau に依存）．
+
 ## 2026-10-09 (8) — 振幅増幅との結合（Thm 58 相当），$\delta=0.1$ の証明書，重い証明書の分離
 
 - `Examples/Compose.lean`: 結合の共通機構（正規化，スペクトル関数計算と Parseval による $\|p(A)b\|$ の上下界，Route A 回路から固定点 AA の入力を作る）．
