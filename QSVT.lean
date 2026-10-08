@@ -20,3 +20,4 @@ import QSVT.SVT.NormBound
 import QSVT.SVT.SVTransform
 import QSVT.Encoding.Ancilla
 import QSVT.Encoding.LCU
+import QSVT.SVT.RealPoly

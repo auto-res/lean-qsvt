@@ -13,6 +13,7 @@ import QSVTTest.TwoVector
 import QSVTTest.QET
 import QSVTTest.SVTransform
 import QSVTTest.LCU
+import QSVTTest.RealPoly
 
 /-!
 # QSVTTest
