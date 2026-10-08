@@ -52,7 +52,7 @@ lake test            # test/ 以下のテストをビルド
 | **Route A**: 計算可能な入力多項式 $f$ から $f(A)P/\|c\|_1$ の符号化（exact） | `routeA` | `QSVT/Pipeline/ChebLCU.lean` |
 | 位相作用素のガジェット（GSLW Lemma 19）と資源数 | `gadget_eq`, `denote_compileQsvtReal`, `oracleCount_compileAltSeq` | `QSVT/Circuit/` |
 
-### 使い方の例（Route A）
+### 使い方の例（Route A，概略．厳密な形は `test/QSVTTest/ChebLCU.lean` を参照）
 
 ```lean
 import QSVT
