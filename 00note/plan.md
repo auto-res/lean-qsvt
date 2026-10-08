@@ -223,6 +223,19 @@
 
 ## 5. スケジュール目安
 
+**達成状況（2026-10-09 時点）**: M1–M5 を達成，M6 は 4 例中 4 例（固定点振幅増幅・閾値射影・擬似逆・Hamiltonian simulation の多項式ステップ）とループ例が揃い，残りは振幅増幅との結合と近似次数の漸近定理．
+計画時の目安（約 1 年）に対し，subagent 並列開発により 2 日で到達した．詳細は [PROGRESS.md](../PROGRESS.md) と [formal-spec.md](formal-spec.md) の進捗表．
+
+| マイルストーン | 状態 | 実体 |
+|---|---|---|
+| M1 Chebyshev の exact 位相 | 済 | `QSP/Chebyshev.lean` |
+| M2 QET 定理 | 済 | `SVT/QET.lean`；一般 QSVT（Thm 17）も `SVT/QSVT.lean` で済 |
+| M3 $f\mapsto$ 回路 + 証明（Hermitian, exact） | 済 | Route A `Pipeline/ChebLCU.lean`，`routeA` |
+| M4 QSVT 定理 + 証明書検査 | 済 | `Certificate/PhaseCheck.lean`（`checkRe_sound`），Route B `Examples/Sign21RouteB.lean`（21 クエリ） |
+| M5 OpenQASM 出力 + compile_correct | 済 | `Circuit/`，`Qubit/Compile.lean`（`compileQ_qsvtReal`），`Qubit/Qasm.lean`，`Qubit/RegBridge.lean` |
+| M6 GSLW 4 例 + ループ例 | ほぼ済 | `Examples/{FixedPointAA,Threshold,Inverse,Evolution,Loop}.lean`；振幅増幅との結合（Thm 41/58 の残り）と Lemma 25/29/40 の漸近次数定理は未 |
+
+
 前提: 1–2 名 + AI 支援，週 20–30 時間．並行可能なものは並行．数字は目安であり，Phase 1–2a の実績で再見積もりする．
 
 | 期間（週） | 主担当フェーズ | 並行 | マイルストーン |
