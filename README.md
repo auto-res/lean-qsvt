@@ -26,6 +26,7 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
   - `QSVT/Examples/` — 応用例（符号関数近似の Route A / Route B 実装，$\cos 2A$）
   - `QSVT/Qubit/` — qubit レジスタ，ゲート，直和モデルとの等長同型，qubit 回路へのコンパイルと OpenQASM 出力
   - `QSVT/Lang/` — 表面構文（`qsvt[Φ] U₀`，`poly[l] U₀`）と `#qsvt_info` コマンド
+- `QSVTHeavy/` — ビルドに数分かかる証明書（$\delta=0.1$ の符号関数近似など）．既定ターゲット外
 - `test/` — 回帰テスト（`lake test`）
 - `00note/` — 計画・仕様・調査メモ
 - `tools/` — CLI `tools/qsvt`（`info`/`qasm`/`check`/`emit-cert`，[tools/README.md](tools/README.md)）と位相角ソルバー（untrusted）
@@ -40,6 +41,7 @@ lake exe cache get   # Mathlib のビルド済みキャッシュを取得（必�
                      # LeanCert（検証付き数値計算）は初回のみソースからビルドされる（約 3–5 分）
 lake build           # QSVT ライブラリをビルド
 lake test            # test/ 以下のテストをビルド
+lake build QSVTHeavy # 数分かかる kernel 証明書（既定では省略）
 ```
 
 ## 主要な結果（すべて sorry なし，公理は `propext`, `Classical.choice`, `Quot.sound` のみ）
@@ -64,6 +66,7 @@ lake test            # test/ 以下のテストをビルド
 | **Route B**: 21 クエリ・補助 1 qubit で符号関数近似を実装 | `signB_apply_pos`, `signB_oracleCount` | `QSVT/Examples/Sign21RouteB.lean` |
 | $\cos(2A)$ の近似（Hamiltonian simulation の実部） | `cosCircuit_apply` | `QSVT/Examples/CosEvolution.lean` |
 | $e^{-2iA}$ の近似（複素係数 Route A，Hamiltonian simulation） | `evoCircuit_apply` | `QSVT/Examples/Evolution.lean` |
+| $e^{-2iA}b$ の準備 + 固定点振幅増幅（GSLW Thm 58 相当，成功振幅 $\ge0.869$） | `evolutionAA_amplitude`, `evolutionAA_output` | `QSVT/Examples/EvolutionAA.lean` |
 | qubit 回路へのコンパイルの正しさと OpenQASM 3 出力 | `compileQ_qsvtReal`, `toQasm` | `QSVT/Qubit/Compile.lean`, `Qasm.lean` |
 | 固定点振幅増幅（GSLW Thm 27）: 初期重なり $\ge0.15$ から成功振幅 $\ge0.869$，21 クエリ | `fixedPointAA_amplitude` | `QSVT/Examples/FixedPointAA.lean` |
 | 線形方程式の多項式ステップ（$\kappa=4$，相対誤差 $10^{-3}$） | `invCircuit_apply_pos` | `QSVT/Examples/Inverse.lean` |

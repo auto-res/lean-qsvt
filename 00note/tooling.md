@@ -13,6 +13,10 @@
 | 作業規約 | `AGENTS.md`（subagent 向け），`PROGRESS.md`（日付付きログ） | 導入済 |
 | 数値検算（untrusted） | Python（numpy/sympy，pyqsp 0.2.0 と qsppack 0.4.0 の両方が導入可）: `tools/phases/` | 導入済．規約変換と例題 JSON は [qsp-convention-check.md](qsp-convention-check.md) |
 
+## 重い証明書の扱い（2026-10-09）
+
+kernel 検査に数分かかる証明書（次数 35 の符号関数近似など）は既定ターゲットから外し，別ライブラリ **`QSVTHeavy`**（`lake build QSVTHeavy` で明示的にビルド，CI は `workflow_dispatch` またはコミットメッセージに `[heavy]` を含むときのみ）に置く．既定の `lake build`/`lake test`/CI は軽いまま保つ．
+
 ## 条件付き採用（後続フェーズ）
 
 | 用途 | ツール | 導入時期・条件 |

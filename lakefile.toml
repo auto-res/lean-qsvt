@@ -25,3 +25,7 @@ name = "QSVT"
 [[lean_lib]]
 name = "QSVTTest"
 srcDir = "test"
+
+# Heavy kernel certificates (several minutes each); built only on demand: `lake build QSVTHeavy`.
+[[lean_lib]]
+name = "QSVTHeavy"

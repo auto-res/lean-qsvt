@@ -3,6 +3,14 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (8) — 振幅増幅との結合（Thm 58 相当），$\delta=0.1$ の証明書，重い証明書の分離
+
+- `Examples/Compose.lean`: 結合の共通機構（正規化，スペクトル関数計算と Parseval による $\|p(A)b\|$ の上下界，Route A 回路から固定点 AA の入力を作る）．
+- `Examples/EvolutionAA.lean`: $e^{-2iA}b$ の準備 + 固定点振幅増幅．初期振幅 $a\ge(1-2\varepsilon)/\|c\|_1\approx0.41$，成功振幅 $\ge0.869$，良い成分は理想状態の $c$ 倍に $0.0237$ 以内，1386 クエリ．
+- `QSVTHeavy/`（新ライブラリ，既定ターゲット外）: $\delta=0.1$ の符号関数近似（次数 35，LP），位相証明書（pyqsp `sym_qsp`，kernel 265 s）．線形方程式の AA 結合に使う（初期振幅 $\approx0.11<0.15$ のため sign21 では不足）．
+  CI には `[heavy]` 付きコミットまたは手動実行でのみ走るジョブを追加．
+- 判断: doc-gen4 は不採用（ユーザー指示）．重いオプションは既定で省略．
+
 ## 2026-10-09 (7) — 相補多項式の存在（GSLW Lemma 6・Thm 5・Cor 10）
 
 - `QSP/Complementary.lean`: Lemma 6 を GSLW の大域的な根の分解ではなく，述語 `SOSRep k A`（$A=B^2+(1-x^2)C^2$ と次数・parity）の積閉性
