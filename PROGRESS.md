@@ -3,6 +3,16 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (6) — 閾値射影，ループ例，符号化の積，$k$ qubit レジスタ，CLI
+
+- **APP-2 閾値射影**: 次数 32 の偶多項式（LP で証明書余裕を最大化），3 つの kernel 証明書（各 35–55 s），`Examples/Threshold.lean`（固有値の窓フィルタ，528 クエリ）．
+- **APP-5 ループ**: `Lang/Loop.lean`（`iterate`，`qsvtIter`: クエリ $|\Phi|^k$，`spec = compIter`，掃引の総クエリ，後選択の期待クエリ），`Examples/Loop.lean`（反復 sign，二分探索スケルトンと窓プログラム）．
+- **ENC-4 積**（GSLW Lemma 53）: `Encoding/Swap.lean`，`Encoding/Product.lean`（`topLeft₂_prodU`）．IR への統合は入れ子補助空間の一般化が必要なため保留．
+- **$k$ qubit レジスタ**: `Qubit/RegBridge.lean`（`regEquiv`，`liftReg_lcu`，`liftReg_chebLCU`）で Route A 回路も qubit 化．
+- **CLI** `tools/qsvt`: `info`/`qasm`/`check`/`emit-cert`．証明書の kernel 検査は生成した Lean モジュールで行う（trust story は `tools/README.md`）．
+- 規模: Lean 約 21,000 行，sorry なし，公理は標準 3 つ．CI は LeanCert 込みで成功．
+- 進行中: QSP-7b（相補多項式の存在，Thm 4/Lemma 6）．完全に証明できた補題のみ取り込む方針．
+
 ## 2026-10-09 (5) — 固定点振幅増幅，線形方程式，言語層の表面構文
 
 - **APP-1 固定点振幅増幅（GSLW Thm 27）**: `SVT/SingularPair.lean`（任意の特異ベクトル対に対する 2 フレーム補題），`SVT/RealPolyGeneral.lean`（一般符号化の Cor 18），
