@@ -84,7 +84,7 @@
 
 | ID | 判断 | 理由 / 代替案 |
 |---|---|---|
-| D1 | **コア定理は基底非依存（`L ℋ`，`Qudit ℋ`）**，回路層は qubit 添字付き行列 `Matrix (Fin n → Bool) (Fin n → Bool) ℂ`．両者を `toOperator` で橋渡し | lean-quantum と整合し，CFC・スペクトル定理をそのまま使える．回路層は Kronecker 積と制御ゲートが具体的に書ける方が楽．依存の仕方（lean-quantum を `require` するか最小部分を複製するか）は Phase 0 でツールチェーン整合を見て決める |
+| D1 | **コア定理は基底非依存（`L ℋ`，`Qudit ℋ`）**，回路層は qubit 添字付き行列 `Matrix (Fin n → Bool) (Fin n → Bool) ℂ`．両者を `toOperator` で橋渡し | lean-quantum と整合し，CFC・スペクトル定理をそのまま使える．回路層は Kronecker 積と制御ゲートが具体的に書ける方が楽．**Phase 0 の結論**: lean-quantum 公開版を v4.34.1 に上げると `QuantumChannel` が 31 エラーでビルド不能（[survey.md](survey.md) §B）→ `QuantumState.lean` の約 70 行（`Qudit`, `L`, `†`, `Tr`, `IsProjective` 等）を Apache-2.0 表示付きで `QSVT/Operator/Basic.lean` に複製し，名前は同一に保つ |
 | D2 | **QSP の規約は GSLW の反射規約 $R(x)$（Cor 8，位相 $d$ 個）**を主，回転規約 $W(x)$（Thm 3，位相 $d+1$ 個）は変換補題で接続 | QSVT 定理（Def 15, Thm 17）が $R$ 規約で書かれている．QSPPACK 等は $W$ 規約なので変換補題が必要 |
 | D3 | **$P^{(SV)}(A)$ は SVD を使わず定義**: $P$ 偶 $=R(x^2)$ なら $\Pi\,R(A^\dagger A)\,\Pi$，$P$ 奇 $=xR(x^2)$ なら $A\,R(A^\dagger A)$ | Mathlib に SVD が無い．代数的定義なら `Polynomial.aeval` で書け，計算可能性・拡張性が高い．SVD との一致は補題として証明 |
 | D4 | **Hermitian 符号化（$\tilde\Pi=\Pi$, $A=A^\dagger$）の QET を先行**，一般 QSVT は後続 | スペクトル定理（Mathlib）だけで閉じ，Hamiltonian simulation・逆行列・基底状態など主要応用を先にカバー |
@@ -105,9 +105,9 @@
   - `lakefile.toml`（Mathlib 最新安定版），`QSVT.lean` ルート，CI（`lake build` + `#print axioms` チェック），blueprint 雛形（lean-quantum と同じ LeanArchitect 方式）．
   - `00note/survey.md`: lean-quantum（依存可否・必要モジュール），inQWIRE/LeanQuantum（Kronecker・制御ゲートの流用可否），LeanCert / girving/interval（Lean 版，`cos`/`sin` の区間評価，kernel 検証可否），Mathlib の `Polynomial.Chebyshev`・`Matrix.unitaryGroup`・`LinearMap.IsSymmetric.eigenvectorBasis`・`cfc` の API 確認．
 - 主要タスク:
-  - [ ] lean-quantum の公開版（v4.29.0-rc6）を最新 Mathlib に上げて `require` できるか試す．無理なら `QSVT/Operator/Basic.lean` に `Qudit`, `L`, `†`, `IsProjective` 相当を最小複製（後で差し替え可能な形）．
-  - [ ] GSLW の定理番号を [formal-spec.md](formal-spec.md) に固定（済），他の規約（Martyn–Rossi–Tan–Chuang 2021 の $W_x$ 規約，QSPPACK）との変換表を作る．
-  - [ ] ソルバー候補の動作確認（QSPPACK Python 版，pyqsp，Berntson–Sünderhauf の FFT 法）．出力を JSON（二進小数の位相列）にする薄いラッパ．
+  - [x] lean-quantum の公開版（v4.29.0-rc6）を最新 Mathlib に上げて `require` できるか試す．→ 不可（survey.md §B）．`QSVT/Operator/Basic.lean` に最小複製する（Phase 2a 着手時）．
+  - [x] GSLW の定理番号を [formal-spec.md](formal-spec.md) に固定，他の規約（pyqsp, qsppack の $W$ 規約）との変換表を作成（[qsp-convention-check.md](qsp-convention-check.md)；GSLW 式 (16) の符号誤りも発見）．
+  - [x] ソルバー候補の動作確認（pyqsp 0.2.0, qsppack 0.4.0 を導入．$T_5$ と次数 21 の符号関数近似で検証）．JSON 出力ラッパ `tools/phases/solver_examples.py`．
 - 完了条件: 空の定理ファイルを含むプロジェクトが CI で通る．D1・D5 の採否が決まる．
 - リスク: ツールチェーン不整合（lean-quantum, LeanCert がそれぞれ別の Lean 版）．→ 最小複製で逃げる．
 

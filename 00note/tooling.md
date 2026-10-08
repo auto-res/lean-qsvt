@@ -11,7 +11,7 @@
 | CI | `leanprover/lean-action`（Mathlib cache 有効，build + test，lint off）＋ `no-sorry` ジョブ | `.github/workflows/ci.yml` |
 | テスト | `lake test`（`test/QSVTTest.lean`）: `#guard`, `#guard_msgs`, `#print axioms` 監査 | 導入済 |
 | 作業規約 | `AGENTS.md`（subagent 向け），`PROGRESS.md`（日付付きログ） | 導入済 |
-| 数値検算（untrusted） | Python（numpy/sympy，pyqsp または QSPPACK）: `tools/phases/` | Agent B が整備中 |
+| 数値検算（untrusted） | Python（numpy/sympy，pyqsp 0.2.0 と qsppack 0.4.0 の両方が導入可）: `tools/phases/` | 導入済．規約変換と例題 JSON は [qsp-convention-check.md](qsp-convention-check.md) |
 
 ## 条件付き採用（後続フェーズ）
 
@@ -21,7 +21,7 @@
 | API ドキュメント | `doc-gen4` | Phase 4（IR のコンビネータが公開 API になる時点） |
 | 言語マニュアル | Verso（`verso-*` のテンプレートが手元にある） | Phase 7（DSL の表面構文が決まってから） |
 | 性質ベーステスト | `plausible`（Mathlib 経由で利用可） | Phase 3（証明書検査器）と Phase 5（回路 `denote`）の計算可能部分に |
-| 検証付き区間演算 | LeanCert（第一候補）/ girving/interval | Phase 3 Route B．採否は `survey.md` §A の結果で決定 |
+| 検証付き区間演算 | **LeanCert v4.34.1**（採用．girving/interval は不採用: v4.27 系・`native_decide` のみ） | Phase 3 Route B で `require` 追加．kernel 検証で $\cos(1/3)$ の $10^{-12}$ 幅の評価と `IntervalRat` の `cos`/`sin`/`sqrt` API（健全性補題付き）を確認（[survey.md](survey.md) §A）．olean は cache されずソースビルド約 5 分なので，依存追加は証明書モジュール着手時に |
 | 回路の数値照合 | Qiskit（状態ベクトル）と `denote` の比較スクリプト | Phase 5 |
 
 ## 不採用
