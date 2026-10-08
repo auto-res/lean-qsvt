@@ -31,3 +31,7 @@ import QSVT.Circuit.Gadget
 import QSVT.Circuit.Primitive
 import QSVT.QSP.PolyW
 import QSVT.QSP.Existence
+import QSVT.IR.Expr
+import QSVT.IR.Denote
+import QSVT.IR.Sound
+import QSVT.IR.Cost
