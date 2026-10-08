@@ -13,18 +13,20 @@
 | POLY-1/2 | 済 | `QSVT/Polynomial/Parity.lean`．`HasParity P n := (Even n → IsEven P) ∧ (Odd n → IsOdd P)` もここ |
 | POLY-3 | 済 | `SqrtPart.lean`: `sqrtPart` ではなく `evenRoot P := contract 2 P`，`oddRoot P := contract 2 P.divX`．`IsEven.eq_evenRoot_comp`，`IsOdd.eq_X_mul_oddRoot_comp` |
 | POLY-4 | 済 | `SupNorm.lean`: `supNorm`，`norm_eval_le_supNorm`，`supNorm_le_of_forall`（$0\le M$ 不要），`supNorm_le_sum_norm_coeff` |
-| POLY-5/6 | 済 | `Chebyshev.lean`: ℕ 添字ラッパ `T_eval_cos`，`norm_eval_T_le_one`，`T_parity`，`natDegree_T`；`ChebSeries`（`toPoly`，`l1`，`supNorm_toPoly_le_l1`）．`chebCoeff`（単項式→Chebyshev 変換）は未実装 |
+| POLY-5/6 | 済 | `Chebyshev.lean`: ℕ 添字ラッパ `T_eval_cos`，`norm_eval_T_le_one`，`T_parity`，`natDegree_T`；`ChebSeries`（`toPoly`，`l1`，`supNorm_toPoly_le_l1`）．`ChebCoeff.lean`: 計算可能な `QC := ℚ × ℚ`，`PolyQC`，`ChebQC`，`ofMonomials`（Horner + `mulX`）と正当性 `toPoly_ofMonomials`，`l1Bound`．`#eval` 可 |
 | QSP-1 | 済 | `QSP/Conventions.lean` |
-| QSP-2 | 未 | 数値検証済（qsp-convention-check.md）．Lean 化は Route B 着手時 |
 | QSP-3 | 済 | `QSP/Poly.lean`（`qspPoly4`，`qspPoly`，`conjP`，`negX`），`QSP/Structure.lean`（`seqR_eval4`，`seqR_eval`，`natDegree_*_le`，`hasParity_*`，`norm_identity`，`qspPoly_neg`，`seqR_apply_zero_zero/one_zero`） |
 | QSP-4 | 済 | `QSP/Chebyshev.lean`: `chebPhases`，`seqR_chebPhases_eq`（全行列，$d\ge 0$），`seqR_chebPhases` |
 | QSP-5 | 済 | `QSP/Endpoints.lean`: `seqR_one`，`seqR_neg_one`，`alt`，`seqR_zero_of_even/odd` |
-| QSP-6/7 | 未 | — |
+| QSP-7 | 未 | 存在定理（Thm 4/5, Lemma 6）．G2 パイプラインには不要 |
 | ENC-1 | 済 | `Encoding/Projected.lean`: 射影のフィールド名は `P`（$\Pi$），`P'`（$\tilde\Pi$）．`Π` は Lean の識別子に使えない．`HermitianEncoding`（`P'_eq`，`encoded_selfAdjoint`） |
-| ENC-2/3 | 進行中 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`（直和）で表し，2×2 ブロック作用素 `block`，`blockDiag`，`anc0`，`hadA`，`lcu2`（`Encoding/Ancilla.lean`，`LCU.lean`）．テンソル積は回路層まで使わない |
+| ENC-2/3 | 済 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`，2×2 ブロック作用素 `block`，`blockDiag`，`topLeft`，`anc0`，`hadA`，`lcu2`（`Ancilla.lean`，`LCU.lean`）．$m$ レジスタは `Reg m ℋ := PiLp 2 (fun _ : Fin m => ℋ)`，`matOp`，`selectOp`，`regTopLeft`，`reg0`，`lcu V W`，Householder 状態準備 `householder`，`lcu_complex`（`Register.lean`，`LCUm.lean`）．テンソル積は回路層まで使わない |
 | SVT-1/2 | 済 | `SVT/AltSeq.lean`（`altSeq`，`altSeq_mem_unitary`，`altSeq_one/two/three`），`SVT/PhaseOp.lean` |
-| SVT-3 | 進行中 | `SVT/EigenBasis.lean`（`eigenVec`，`eigenValue`，`aeval_eigenVec`，`ext_of_eigenVec`），`SVT/TwoVector.lean`（(R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen(_eval)`）は済．`SVT/QET.lean`（`qet`，`qet_chebyshev`）を組み立て中 |
-| SVT-4/5 | 進行中 | `SVT/NormBound.lean`（ベクトル形 `‖aeval A p x‖ ≤ supNorm p * ‖x‖`），`SVT/SVTransform.lean`（`svTransform`，`svTransform_eq_aeval`） |
+| SVT-3 | 済 | `SVT/EigenBasis.lean`（`eigenVec`，`eigenValue`，`aeval_eigenVec`，`ext_of_eigenVec`），`SVT/TwoVector.lean`（(R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen(_eval)`），`SVT/QET.lean`: **`qet : P * altSeq Φ * P = aeval A (qspPoly Φ).1 * P`**，`qspPoly_chebPhases`，`qet_chebyshev` |
+| SVT-4/5 | 済 | `SVT/NormBound.lean`（`norm_aeval_apply_le`，`opNorm_aeval_mul_P_le`），`SVT/SVTransform.lean`（`svTransform`，`svTransform_of_isEven/isOdd`，`svTransform_eq_aeval`） |
+| SVT-8 | 済 | `SVT/RealPoly.lean`: `rePoly`，`aeval_adjoint`，`P_mul_aeval`，**`qet_real`**（Cor 18），合成子 `HermitianEncoding.qsvtReal E Φ : HermitianEncoding (Anc ℋ)` と `qsvtReal_encoded` |
+| CERT-A | 進行中 | `Pipeline/ChebLCU.lean`: `chebLCU E c`（Chebyshev 位相の QET を `lcu_complex` で合成），`routeA`（計算可能入力 `PolyQC` から $f(A)P/\|c\|_1$ の符号化） |
+| QSP-2/6 | 進行中 | `QSP/Conversion.lean`（`Wrot_eq_Rref`，`seqW_eq_seqR`），`QSP/Perturb.lean`（`norm_seqR_sub_seqR`） |
 | 作用素層 | 済 | `Operator/Basic.lean`: lean-quantum の `QuantumState` 名前空間を同名で複製（Apache-2.0 表示） |
 
 

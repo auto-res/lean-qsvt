@@ -3,6 +3,20 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 — Phase 2a (QET) 完了，Cor 18・LCU・Chebyshev 変換が揃う（M2 達成，M3 組み立て中）
+
+- **SVT-3 `qet`**（`QSVT/SVT/QET.lean`）: $P\,U_\Phi\,P = P_\Phi(A)\,P$ を Hermitian ブロック符号化で証明（SVD 不要，固有ベクトル単位の帰納法）．
+  `qspPoly_chebPhases`（$P_{\text{cheb}(d)} = T_d$，無限個の点での一致から多項式の等式）と `qet_chebyshev`．
+- SVT-4 `NormBound.lean`（$\|p(A)x\|\le\|p\|_\infty\|x\|$，作用素ノルム版も），SVT-5 `SVTransform.lean`（SVD 不要の `svTransform`，Hermitian で `aeval A p * P` に一致）．
+- SVT-8 `RealPoly.lean`: `qet_real`（GSLW Cor 18）と合成子 `HermitianEncoding.qsvtReal`（出力が再び `HermitianEncoding (Anc ℋ)`）．
+- ENC-2/3: `Ancilla.lean`/`LCU.lean`（1 補助 qubit = 直和 `WithLp 2 (ℋ × ℋ)`，2 項 LCU），`Register.lean`/`LCUm.lean`
+  （$m$ レジスタ = `PiLp 2`，`matOp`/`selectOp`，Householder 状態準備，`lcu_complex`）．
+  注: `topLeft` の名前衝突（Ancilla と Register）を `regTopLeft` への改名で解消．パイプ経由のビルド確認で失敗が隠れた反省から，
+  以後は `lake build` の終了コードを直接見る．
+- POLY-6 `ChebCoeff.lean`: 計算可能な Gauss 有理係数多項式と単項式→Chebyshev 変換（`#eval` 可，`decide +kernel` で検算）．
+- 進行中: `Pipeline/ChebLCU.lean`（Route A: `routeA` 定理 = G2 の最初の達成），`QSP/Conversion.lean`，`QSP/Perturb.lean`．
+- 規模: Lean 約 6,000 行，全モジュール sorry なし，公理は標準 3 つのみ．`lake build` 増分 6 s．
+
 ## 2026-10-08 — Phase 0 完了，Phase 1 (QSP) 完了，Phase 2a (QET) 組み立て中
 
 subagent による並列開発（1 エージェント＝1 ファイル集合，親がコミット）で進めた．
