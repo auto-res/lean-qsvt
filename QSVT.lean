@@ -29,3 +29,5 @@ import QSVT.QSP.Conversion
 import QSVT.QSP.Perturb
 import QSVT.Circuit.Gadget
 import QSVT.Circuit.Primitive
+import QSVT.QSP.PolyW
+import QSVT.QSP.Existence

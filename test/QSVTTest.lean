@@ -19,6 +19,7 @@ import QSVTTest.LCUm
 import QSVTTest.ChebLCU
 import QSVTTest.Conversion
 import QSVTTest.Circuit
+import QSVTTest.Existence
 
 /-!
 # QSVTTest
