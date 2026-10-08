@@ -4,6 +4,11 @@ Released under MIT license as described in the file LICENSE.
 Authors: shosonoda
 -/
 import QSVT
+import QSVTTest.Structure
+import QSVTTest.Chebyshev
+import QSVTTest.Encoding
+import QSVTTest.EigenBasis
+import QSVTTest.Polynomial
 
 /-!
 # QSVTTest
