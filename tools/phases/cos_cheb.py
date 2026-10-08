@@ -20,9 +20,20 @@ consumed downstream; everything else printed is an untrusted numerical report:
 With `--shift s` the constant coefficient is lowered by s (p(0) = 1 - tail - s): this gives the
 `p <= 1` certificate a margin of about s at x = 0 at the price of s in the approximation error.
 
+With `--sin` the odd part is produced instead (APP-4, imaginary part of e^{-itx}):
+
+    sin(t x) = 2 sum_{k>=0} (-1)^k J_{2k+1}(t) T_{2k+1}(x)        (Jacobi-Anger, odd part)
+
+truncated at an odd degree d with tail 2 sum_{2k+1>d} |J_{2k+1}(t)| below `--tail`.  Since
+max |sin(t x)| = 1 is attained inside [-1, 1] (for t >= pi/2) the truncation can overshoot 1 by
+about the tail, so `--scale s` multiplies every Chebyshev coefficient by (1 - s) before the
+rounding: the `|p| <= 1` certificate then has a margin of about s at the price of s in the
+approximation error (the odd polynomial has no constant term, so `--shift` does not apply).
+
 Usage:
   .venv/bin/python cos_cheb.py --t 2 --name cos2Poly
   .venv/bin/python cos_cheb.py --t 2 --degree 10 --shift 5e-7
+  .venv/bin/python cos_cheb.py --t 2 --sin --name sin2Poly --scale 1e-8
 """
 from __future__ import annotations
 
@@ -88,43 +99,58 @@ def main() -> None:
     ap.add_argument("--tail", type=float, default=1e-7, help="tail bound for the automatic degree")
     ap.add_argument("--digits", type=int, default=30, help="significant digits of the coefficients")
     ap.add_argument("--shift", type=float, default=0.0, help="lower the constant term by this much")
-    ap.add_argument("--name", default="cos2Poly", help="Lean identifier")
+    ap.add_argument("--sin", action="store_true", help="approximate sin(t x) (odd part) instead")
+    ap.add_argument("--scale", type=float, default=0.0,
+                    help="multiply every coefficient by (1 - scale) before rounding")
+    ap.add_argument("--name", default=None, help="Lean identifier (default cos2Poly / sin2Poly)")
     ap.add_argument("--grid", type=int, default=200000)
     args = ap.parse_args()
 
     mp.mp.dps = 50
     t = mp.mpf(args.t)
+    odd = args.sin
+    fname = "sin" if odd else "cos"
+    target = mp.sin if odd else mp.cos
+    name = args.name or f"{fname}2Poly"
+    parity = 1 if odd else 0
 
-    # Chebyshev coefficients c_{2k} = (-1)^k 2 J_{2k}(t) (k >= 1), c_0 = J_0(t); odd ones vanish.
+    # cos: c_{2k} = (-1)^k 2 J_{2k}(t) (k >= 1), c_0 = J_0(t); odd ones vanish.
+    # sin: c_{2k+1} = (-1)^k 2 J_{2k+1}(t); even ones vanish.
     def cheb_coeff(k: int) -> mp.mpf:
-        if k % 2 == 1:
+        if k % 2 != parity:
             return mp.mpf(0)
         j = k // 2
-        return mp.besselj(0, t) if j == 0 else 2 * (-1) ** j * mp.besselj(k, t)
+        if not odd and j == 0:
+            return mp.besselj(0, t)
+        return 2 * (-1) ** j * mp.besselj(k, t)
+
+    def tail_from(d: int) -> mp.mpf:
+        return sum(2 * abs(mp.besselj(k, t)) for k in range(d + 2, d + 60, 2))
 
     if args.degree is None:
-        d = 0
-        while True:
-            tail = sum(2 * abs(mp.besselj(k, t)) for k in range(d + 2, d + 60, 2))
-            if tail < args.tail:
-                break
+        d = parity
+        while tail_from(d) >= args.tail:
             d += 2
     else:
         d = args.degree
-        if d % 2:
-            raise SystemExit("degree must be even")
-    tail = sum(2 * abs(mp.besselj(k, t)) for k in range(d + 2, d + 60, 2))
+        if d % 2 != parity:
+            raise SystemExit(f"degree must be {'odd' if odd else 'even'}")
+    tail = tail_from(d)
 
-    cheb_exact = [cheb_coeff(k) for k in range(d + 1)]
+    # The scale factor is applied before the rounding, so that the coefficients keep `--digits`
+    # significant digits (an exact rational factor would lengthen every denominator).
+    factor = 1 - mp.mpf(repr(args.scale)) if args.scale else mp.mpf(1)
+    cheb_exact = [factor * cheb_coeff(k) for k in range(d + 1)]
     cheb = [round_sig(c, args.digits) if c != 0 else Fraction(0) for c in cheb_exact]
     shift = Fraction(Decimal(repr(args.shift))) if args.shift else Fraction(0)
     cheb[0] -= shift
     mono = cheb_to_monomial(cheb)
 
-    print(f"-- cos({args.t} x) on [-1, 1]: Jacobi-Anger truncated at degree {d}")
+    print(f"-- {fname}({args.t} x) on [-1, 1]: Jacobi-Anger truncated at degree {d}")
     print(f"-- truncation tail 2 sum_{{k>{d}}} |J_k({args.t})| = {mp.nstr(tail, 6)}; "
-          f"coefficients rounded to {args.digits} significant digits; shift of a_0 = {args.shift}")
-    print(f"def {args.name} : PolyQ :=")
+          f"coefficients rounded to {args.digits} significant digits; shift of a_0 = {args.shift}; "
+          f"scale factor 1 - {args.scale}")
+    print(f"def {name} : PolyQ :=")
     print("  [")
     for i, q in enumerate(mono):
         sep = "," if i + 1 < len(mono) else ""
@@ -143,16 +169,20 @@ def main() -> None:
     n = args.grid
     err_max = mp.mpf(0)
     p_max = mp.mpf(0)
+    x_max = mp.mpf(0)
     for i in range(n + 1):
         x = mp.mpf(-1) + mp.mpf(2) * i / n
         p = horner_mp(mono, x)
-        err_max = max(err_max, abs(p - mp.cos(t * x)))
-        p_max = max(p_max, abs(p))
+        err_max = max(err_max, abs(p - target(t * x)))
+        if abs(p) > p_max:
+            p_max, x_max = abs(p), x
     p0 = horner_mp(mono, mp.mpf(0))
-    print(f"-- max |p(x) - cos({args.t} x)| on [-1,1] (grid {n + 1}): {mp.nstr(err_max, 6)}")
-    print(f"-- max |p(x)| on [-1,1]: {mp.nstr(p_max, 20)}")
+    print(f"-- max |p(x) - {fname}({args.t} x)| on [-1,1] (grid {n + 1}): {mp.nstr(err_max, 6)}")
+    print(f"-- max |p(x)| on [-1,1]: {mp.nstr(p_max, 20)} at x = {mp.nstr(x_max, 8)} "
+          f"(1 - max |p| = {mp.nstr(1 - p_max, 6)})")
     print(f"-- p(0) = {mp.nstr(p0, 20)}  (1 - p(0) = {mp.nstr(1 - p0, 6)})")
-    print(f"-- p(1) = {mp.nstr(horner_mp(mono, mp.mpf(1)), 20)}, cos({args.t}) = {mp.nstr(mp.cos(t), 20)}")
+    print(f"-- p(1) = {mp.nstr(horner_mp(mono, mp.mpf(1)), 20)}, "
+          f"{fname}({args.t}) = {mp.nstr(target(t), 20)}")
 
 
 if __name__ == "__main__":
