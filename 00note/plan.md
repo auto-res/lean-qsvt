@@ -117,8 +117,8 @@
 - 成果物: `QSVT/QSP/*.lean`
 - 主要タスク:
   - [ ] `POLY-*`: parity，偶奇分解 `evenPart/oddPart`，偶多項式 $=R(x^2)$ の表現，$[-1,1]$ 上 sup ノルム，Chebyshev $T_n$ の性質（Mathlib 流用）．
-  - [ ] `QSP-1`: $R(x)$, $e^{i\phi\sigma_z}$，列 `seqR Φ x` の再帰定義．$W(x)$ 規約も定義し変換補題 `QSP-2`（Cor 8 の証明中の $W = i e^{-i\pi/4\sigma_z} R e^{i\pi/4\sigma_z}$）．
-  - [ ] `QSP-3`: $(P_\Phi, Q_\Phi)$ を **多項式の再帰**で定義（GSLW 式 (4) の更新則）し，評価定理「$x\in[-1,1]$ で `seqR Φ x` の成分 $= P_\Phi(x),\ iQ_\Phi(x)\sqrt{1-x^2},\dots$」を帰納法で証明．次数・parity・$|P|^2+(1-x^2)|Q|^2=1$ を系として導出．
+  - [ ] `QSP-1`: $R(x)$, $e^{i\phi\sigma_z}$，列 `seqR Φ x` の再帰定義．$W(x)$ 規約も定義し変換補題 `QSP-2`（$W = i e^{-i\pi/4\sigma_z} R e^{-i\pi/4\sigma_z}$．GSLW 式 (16) の印刷は右側の符号が誤り．数値検証済）．
+  - [ ] `QSP-3`: $(P_\Phi, Q_\Phi)$ を **多項式の再帰**で定義（formal-spec.md の検証済再帰．$Q$ は左下成分）し，評価定理「$x\in[-1,1]$ で `seqR Φ x` の成分 $= P_\Phi(x),\ iQ_\Phi(x)\sqrt{1-x^2},\dots$」を帰納法で証明．次数・parity・$|P|^2+(1-x^2)|Q|^2=1$ を系として導出．
   - [ ] `QSP-4`: Chebyshev の閉形式位相（Lemma 9）: $\phi_1=(1-d)\pi/2,\ \phi_{i\ge2}=\pi/2$ で $P_\Phi=T_d$．最初の「exact な実例」．
   - [ ] `QSP-5`: 端点公式 $P_\Phi(\pm1)=(\pm1)^d\prod e^{i\phi_j}$，偶数 $d$ の $P_\Phi(0)$（Cor 8 の moreover）．QSVT 定理の端点ケースで必要．
   - [ ] `QSP-6`: 摂動補題 $\|P_\Phi - P_{\Phi'}\|_\infty \le 2\sum_j|\phi_j-\phi'_j|$（ユニタリ積の telescoping）．

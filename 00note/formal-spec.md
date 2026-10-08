@@ -50,26 +50,30 @@ def seqW (φ₀ : ℝ) (Φ : List ℝ) (x : ℝ) : M₂
 補題: `Rref x ∈ unitaryGroup` for $x\in[-1,1]$（$\sqrt{1-x^2}$ は `Real.sqrt`），`Rref x * Rref x = 1`，`phaseZ φ` ユニタリ．
 
 ### QSP-2 規約変換（★★）
-GSLW Cor 8 の証明（式 (16)）: $W(x) = i\,e^{-i\frac\pi4\sigma_z}R(x)e^{i\frac\pi4\sigma_z}$．系として
-$$\mathrm{seqW}(\phi'_0,\dots,\phi'_d; x) = \mathrm{seqR}(\Phi; x)\ \text{ with }\ \phi_1 = \phi'_0+\phi'_d+(d-1)\tfrac\pi2,\ \phi_j = \phi'_{j-1}-\tfrac\pi2\ (j\ge2)$$
-（左上成分が一致；全体は位相 $i^d$ と右側の $e^{i(\phi'_d-\pi/4)\sigma_z}$ の分だけ異なる）．ソルバー（$W_x$ 規約）出力を主規約に写すのに使う．Martyn et al. の $W_x$ 規約との表も作る．
+**検証済（2026-10-08，`tools/phases/qsp_conventions.py`，$d\le 8$）**: GSLW 式 (16) は印刷では右側が $e^{+i\frac\pi4\sigma_z}$ だが，正しくは両側とも $-\pi/4$:
+$$W(x) = i\,e^{-i\frac\pi4\sigma_z}\,R(x)\,e^{-i\frac\pi4\sigma_z}.$$
+位相の対応は Cor 8 の主張どおり $\phi_1 = \phi'_0+\phi'_d+(d-1)\tfrac\pi2,\ \phi_j = \phi'_{j-1}-\tfrac\pi2\ (j\ge2)$ で左上成分が一致．行列全体の厳密な関係は（$\theta := \phi'_d-\pi/4$，$\tilde\Phi := (\phi'_0-\pi/4,\ \phi'_1-\pi/2,\dots,\phi'_{d-1}-\pi/2)$）
+$$\mathrm{seqW}(\Phi';x) = i^d\,\mathrm{seqR}(\tilde\Phi;x)\,e^{i\theta\sigma_z} = \sigma_z^d\,e^{-i\theta\sigma_z}\,\mathrm{seqR}(\Phi;x)\,e^{i\theta\sigma_z}.$$
+ソルバー（pyqsp，qsppack はいずれも seqW 規約）の出力を主規約に写すのに使う．各ソルバーの規約差（対称位相，$\pm\pi/4$ オフセット，$\Re P$ か $\Im P$ か）は [qsp-convention-check.md](qsp-convention-check.md) の表を参照．
 
 ### QSP-3 構造定理（評価定理）（★★★）
-多項式の再帰（$R$ 規約版．GSLW Thm 3 の式 (4) を $R$ に合わせて書き直す）:
+**検証済（数値・記号，$d\le 8$）**の $R$ 規約の再帰．$Q$ は**左下**成分の多項式:
 ```lean
-/-- (P_Φ, Q_Φ) : seqR Φ x = [[P(x), Q(x)√(1-x²)], [Q^♯(x)√(1-x²), P^♯(x)]] となる多項式 -/
+/-- QSP-3. seqR Φ x = [[P(x), Q*(−x)·s], [Q(x)·s, P*(−x)]],  s = √(1-x²),  d = Φ.length -/
 def qspPoly : List ℝ → ℂ[X] × ℂ[X]
 | []       => (1, 0)
 | (φ :: Φ) => let (P, Q) := qspPoly Φ
-              ( C (exp (I φ)) * (X * P + (1 - X^2) * Q),      -- 要確認: 符号・共役の並びは Rref の定義から導出
-                C (exp (-I φ)) * (P - X * Q) )
+              ( C (exp (I * φ)) * (X * P + (1 - X ^ 2) * Q),
+                C (exp (-(I * φ))) * (P - X * Q) )
 ```
-**定理 `seqR_eval`**: $\forall x\in[-1,1]$，`seqR Φ x = ![![P.eval x, Q.eval x * √(1-x²)], ![…, …]]`（具体形は再帰定義から機械的に）．
-**系**: (i) $\deg P\le d$, $\deg Q\le d-1$；(ii) parity $P\equiv d$, $Q\equiv d-1 \pmod 2$；(iii) $|P(x)|^2+(1-x^2)|Q(x)|^2=1$（ユニタリ性から）．
-注: 右下成分が $P^*$ になるのは $W$ 規約（Thm 3）の形．$R$ 規約では $\det R=-1$ のため成分の対応がずれるので，**まず再帰定義を書き `seqR_eval` を $d=1,2$ で `norm_num` 検算してから一般化する**．$x=\cos\theta$ に置換した版 `seqR_eval_cos` も用意（$\sqrt{1-x^2}=\sin\theta$ で根号を消す）．
+ここで $P^*$ は係数の複素共役（`P.map (starRingEnd ℂ)`），$Q^*(-x)$ はそれを $-X$ で合成したもの．右列は左列から決まる（帰納法で閉じる）ので再帰は 2 項で十分．
+**定理 `seqR_eval`**: $\forall x\in[-1,1]$，$s=$ `Real.sqrt (1 - x^2)` として
+`seqR Φ x = !![P.eval x, (Q.map conj).eval (-x) * s; Q.eval x * s, (P.map conj).eval (-x)]`．
+**系**: (i) $\deg P\le d$, $\deg Q\le d-1$；(ii) parity $P\equiv d$, $Q\equiv d-1 \pmod 2$；(iii) $|P(x)|^2+(1-x^2)|Q(x)|^2=1$（ユニタリ性から）；(iv) `qspPoly (Φ.map Neg.neg) = (P.map conj, Q.map conj)`（Cor 18 で使用）．
+等価な 4 項版（$P,Q_t,Q_b,P_b$，基底 $(1,0,0,1)$）: $P'=e^{i\phi}(xP+(1-x^2)Q_b)$，$Q_t'=e^{i\phi}(xQ_t+P_b)$，$Q_b'=e^{-i\phi}(P-xQ_b)$，$P_b'=e^{-i\phi}((1-x^2)Q_t-xP_b)$，帰納法で $Q_t=Q_b^*(-x)$，$P_b=P^*(-x)$ が閉じる．帰納法の仮定を強くしたいときはこちらを使う．$x=\cos\theta$ 版 `seqR_eval_cos`（$s=\sin\theta$）も用意．
 
 ### QSP-4 Chebyshev の閉形式位相（GSLW Lemma 9）（★★）
-$\Phi = ((1-d)\pi/2, \pi/2, \dots, \pi/2)$ に対し $P_\Phi = T_d$．証明: $e^{i\frac\pi2\sigma_z}R(x) = i\sigma_z R(x)$ は角 $\arccos x$ の回転なので $d$ 個の積は角 $d\arccos x$ の回転．`POLY-5` の $T_d(\cos\theta)=\cos d\theta$ で閉じる．Route A（exact パイプライン）の基盤．
+$\Phi = ((1-d)\pi/2, \pi/2, \dots, \pi/2)$ に対し $P_\Phi = T_d$（数値検証済；行列全体は $[[T_d,\ U_{d-1}s],[(-1)^{d+1}U_{d-1}s,\ (-1)^dT_d]]$，$U_{d-1}$ は第 2 種 Chebyshev）．証明: $e^{i\frac\pi2\sigma_z}R(x) = i\sigma_z R(x)$ は角 $\arccos x$ の回転なので $d$ 個の積は角 $d\arccos x$ の回転．`POLY-5` の $T_d(\cos\theta)=\cos d\theta$ で閉じる．Route A（exact パイプライン）の基盤．
 
 ### QSP-5 端点公式（GSLW Cor 8 moreover）（★）
 $P_\Phi(\pm1) = (\pm1)^d\prod_j e^{i\phi_j}$；$d$ 偶なら $P_\Phi(0) = e^{-i\sum_j(-1)^j\phi_j}$．$x=\pm1$ で $R$ が対角，$x=0$ で $R=\sigma_x$ になることから．
