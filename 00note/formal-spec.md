@@ -18,15 +18,18 @@
 | QSP-3 | 済 | `QSP/Poly.lean`（`qspPoly4`，`qspPoly`，`conjP`，`negX`），`QSP/Structure.lean`（`seqR_eval4`，`seqR_eval`，`natDegree_*_le`，`hasParity_*`，`norm_identity`，`qspPoly_neg`，`seqR_apply_zero_zero/one_zero`） |
 | QSP-4 | 済 | `QSP/Chebyshev.lean`: `chebPhases`，`seqR_chebPhases_eq`（全行列，$d\ge 0$），`seqR_chebPhases` |
 | QSP-5 | 済 | `QSP/Endpoints.lean`: `seqR_one`，`seqR_neg_one`，`alt`，`seqR_zero_of_even/odd` |
-| QSP-7 | 未 | 存在定理（Thm 4/5, Lemma 6）．G2 パイプラインには不要 |
+| QSP-7 | 一部済 | `QSP/PolyW.lean`（回転規約の再帰 `qspPolyW`，`seqW_eval`），`QSP/Existence.lean`（**`exists_phases`**: Thm 3 ⇐ を次数降下の帰納法で一般に証明，`exists_phases_R`）．相補多項式の存在（Thm 4，Lemma 6: 根の分解）は未着手 |
 | ENC-1 | 済 | `Encoding/Projected.lean`: 射影のフィールド名は `P`（$\Pi$），`P'`（$\tilde\Pi$）．`Π` は Lean の識別子に使えない．`HermitianEncoding`（`P'_eq`，`encoded_selfAdjoint`） |
 | ENC-2/3 | 済 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`，2×2 ブロック作用素 `block`，`blockDiag`，`topLeft`，`anc0`，`hadA`，`lcu2`（`Ancilla.lean`，`LCU.lean`）．$m$ レジスタは `Reg m ℋ := PiLp 2 (fun _ : Fin m => ℋ)`，`matOp`，`selectOp`，`regTopLeft`，`reg0`，`lcu V W`，Householder 状態準備 `householder`，`lcu_complex`（`Register.lean`，`LCUm.lean`）．テンソル積は回路層まで使わない |
 | SVT-1/2 | 済 | `SVT/AltSeq.lean`（`altSeq`，`altSeq_mem_unitary`，`altSeq_one/two/three`），`SVT/PhaseOp.lean` |
 | SVT-3 | 済 | `SVT/EigenBasis.lean`（`eigenVec`，`eigenValue`，`aeval_eigenVec`，`ext_of_eigenVec`），`SVT/TwoVector.lean`（(R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen(_eval)`），`SVT/QET.lean`: **`qet : P * altSeq Φ * P = aeval A (qspPoly Φ).1 * P`**，`qspPoly_chebPhases`，`qet_chebyshev` |
 | SVT-4/5 | 済 | `SVT/NormBound.lean`（`norm_aeval_apply_le`，`opNorm_aeval_mul_P_le`），`SVT/SVTransform.lean`（`svTransform`，`svTransform_of_isEven/isOdd`，`svTransform_eq_aeval`） |
 | SVT-8 | 済 | `SVT/RealPoly.lean`: `rePoly`，`aeval_adjoint`，`P_mul_aeval`，**`qet_real`**（Cor 18），合成子 `HermitianEncoding.qsvtReal E Φ : HermitianEncoding (Anc ℋ)` と `qsvtReal_encoded` |
-| CERT-A | 進行中 | `Pipeline/ChebLCU.lean`: `chebLCU E c`（Chebyshev 位相の QET を `lcu_complex` で合成），`routeA`（計算可能入力 `PolyQC` から $f(A)P/\|c\|_1$ の符号化） |
-| QSP-2/6 | 進行中 | `QSP/Conversion.lean`（`Wrot_eq_Rref`，`seqW_eq_seqR`），`QSP/Perturb.lean`（`norm_seqR_sub_seqR`） |
+| CERT-A | 済 | `Pipeline/ChebLCU.lean`: `chebLCU E c`，`regTopLeft_regP_chebLCU_regP`，**`routeA`**（計算可能入力 `PolyQC` から $f(A)P/\|c\|_1$ の符号化，exact），`chebHermitianEncoding`，`routeA_queries` |
+| CERT-B | 進行中 | `Certificate/Bound.lean`（LeanCert の kernel 検証による明示多項式の区間評価と `supNorm` への接続），`Certificate/Sign21.lean`（次数 21 の符号関数近似の証明書）．位相列からの Chebyshev 係数区間評価（`check`/`check_sound`）は次段 |
+| IR-1/2 | 済 | `IR/Expr.lean`（`Expr = oracle \| qsvtReal Φ e \| chebLCU c₀ c e`，`spec`，`scale`，`WellScaled`），`IR/Denote.lean`（`space`，`denote`，`chebEnc0`: 次段の射影は `atZero Π = \|0⟩⟨0\| ⊗ Π`），`IR/Sound.lean`（**`compress_aeval_mul_P`**，`base_eq_smul`），`IR/Cost.lean`（`queries`，`ancillaDim`，`natDegree_spec_le`） |
+| CIRC-1/3 | 済 | `Circuit/Gadget.lean`（`cpiNot`，`gadget_eq`: Fig. 1b，`gadgetSeq_eq`，`qsvtReal_U_eq_gadget`），`Circuit/Primitive.lean`（`Prim`，`Circuit.denote`，`compileQsvtReal`，`denote_compileQsvtReal`，資源数 `oracleCount = n`，`cpiNotCount = 2n`，`phaseCount = n`） |
+| QSP-2/6 | 済 | `QSP/Conversion.lean`（`Wrot_eq_Rref`，`seqW_eq_seqR`，`seqW_apply_zero_zero_eq`: Cor 8 の対応を一般の $d$ で），`QSP/Perturb.lean`（`norm_seqR_sub_seqR_le`: 定数 1，作用素ノルムは `Matrix.Norms.L2Operator`） |
 | 作用素層 | 済 | `Operator/Basic.lean`: lean-quantum の `QuantumState` 名前空間を同名で複製（Apache-2.0 表示） |
 
 

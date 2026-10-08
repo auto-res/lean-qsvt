@@ -3,6 +3,20 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (2) — Route A 完成（M3），IR・回路層・存在定理，Route B 着手
+
+- **CERT-A `routeA`**（`QSVT/Pipeline/ChebLCU.lean`）: 計算可能な入力 `PolyQC` → Chebyshev 係数 → 各 $T_k$ を閉形式位相の QET で実装 →
+  Householder 状態準備 + $m$ 項 LCU で合成．`regTopLeft (regP * chebLCU * regP) = ‖c‖₁⁻¹ • (f(A) * P)`（exact）．G2 の最初の達成．
+- **IR-1/2**（`QSVT/IR/`）: `Expr`（`oracle`，`qsvtReal Φ`，`chebLCU c`），`denote`（符号化の合成），`compress`，健全性
+  `compress_aeval_mul_P`（`WellScaled` が必要），`queries`/`ancillaDim`，`natDegree_spec_le`．
+  設計上の発見: LCU 出力を次段の QSVT に渡すときの射影は `|0⟩⟨0| ⊗ Π`（`atZero`）でなければならない（GSLW Def 43 と同じ）．
+- **CIRC-1/3**（`QSVT/Circuit/`）: $C_\Pi\mathrm{NOT}$ ガジェット `gadget_eq`（Fig. 1b），`gadgetSeq_eq = blockDiag (U_Φ) (U_{−Φ})`，
+  原始ゲート列 `compileQsvtReal` と `denote_compileQsvtReal`，資源数定理（GSLW Lemma 19 の $n, 2n, n$）．
+- QSP-2/6（`Conversion.lean`，`Perturb.lean`），QSP-7c（`Existence.lean`: Thm 3 ⇐）．
+- README に主要定理の表と使い方を追加．
+- 進行中: Route B1（LeanCert v4.34.1 を依存に追加，次数 21 の符号関数近似の sup ノルム証明書を kernel 検証）．
+- 規模: Lean 約 9,300 行，sorry なし．`lake build` 増分 6 s（LeanCert 追加後はソースビルド約 5 分が初回に加わる）．
+
 ## 2026-10-09 — Phase 2a (QET) 完了，Cor 18・LCU・Chebyshev 変換が揃う（M2 達成，M3 組み立て中）
 
 - **SVT-3 `qet`**（`QSVT/SVT/QET.lean`）: $P\,U_\Phi\,P = P_\Phi(A)\,P$ を Hermitian ブロック符号化で証明（SVD 不要，固有ベクトル単位の帰納法）．
