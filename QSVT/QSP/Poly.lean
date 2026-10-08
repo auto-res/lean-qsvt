@@ -21,27 +21,13 @@ The polynomials attached to a reflection-convention QSP phase sequence
   form; `(P, Qb)` coincides with `qspPoly Φ`.
 * `conjP P = P.map conj` (coefficientwise complex conjugate, written `P^*` in GSLW),
   `negX P = P.comp (-X)` (so `(negX P).eval x = P.eval (-x)`).
-* `QSVT.Poly.HasParity P n`: `P` has the parity of `n` (even if `n` even, odd if `n` odd).
+* Parity (`QSVT.Poly.HasParity P n`) is defined in `QSVT.Polynomial.Parity`.
 
 This module contains only definitions and unfolding lemmas.  The evaluation theorem
 `seqR_eval` and its corollaries are in `QSVT.QSP.Structure`.
 -/
 
 open Polynomial
-
-namespace QSVT.Poly
-
-/-- POLY-1. `HasParity P n`: `P` is even when `n` is even and odd when `n` is odd. -/
-def HasParity (P : ℂ[X]) (n : ℕ) : Prop :=
-  (Even n → IsEven P) ∧ (Odd n → IsOdd P)
-
-theorem HasParity.isEven {P : ℂ[X]} {n : ℕ} (h : HasParity P n) (hn : Even n) : IsEven P :=
-  h.1 hn
-
-theorem HasParity.isOdd {P : ℂ[X]} {n : ℕ} (h : HasParity P n) (hn : Odd n) : IsOdd P :=
-  h.2 hn
-
-end QSVT.Poly
 
 namespace QSVT.QSP
 
