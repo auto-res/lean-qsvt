@@ -33,6 +33,7 @@ import QSVTTest.QSVT
 import QSVTTest.FixedPointAA
 import QSVTTest.Lang
 import QSVTTest.Inverse
+import QSVTTest.Loop
 
 /-!
 # QSVTTest

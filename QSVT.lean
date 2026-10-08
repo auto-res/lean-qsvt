@@ -62,3 +62,5 @@ import QSVT.Lang.Notation
 import QSVT.Lang.Info
 import QSVT.Certificate.InvExample
 import QSVT.Examples.Inverse
+import QSVT.Lang.Loop
+import QSVT.Examples.Loop
