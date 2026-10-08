@@ -66,3 +66,4 @@ import QSVT.Lang.Loop
 import QSVT.Examples.Loop
 import QSVT.Encoding.Swap
 import QSVT.Encoding.Product
+import QSVT.Qubit.RegBridge
