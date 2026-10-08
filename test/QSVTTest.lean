@@ -31,6 +31,7 @@ import QSVTTest.Evolution
 import QSVTTest.QubitCompile
 import QSVTTest.QSVT
 import QSVTTest.FixedPointAA
+import QSVTTest.Lang
 
 /-!
 # QSVTTest

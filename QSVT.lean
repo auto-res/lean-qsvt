@@ -57,3 +57,6 @@ import QSVT.SVT.QSVT
 import QSVT.SVT.SingularPair
 import QSVT.SVT.RealPolyGeneral
 import QSVT.Examples.FixedPointAA
+import QSVT.Lang.ExprQ
+import QSVT.Lang.Notation
+import QSVT.Lang.Info
