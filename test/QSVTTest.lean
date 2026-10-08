@@ -16,6 +16,7 @@ import QSVTTest.LCU
 import QSVTTest.RealPoly
 import QSVTTest.ChebCoeff
 import QSVTTest.LCUm
+import QSVTTest.ChebLCU
 
 /-!
 # QSVTTest
