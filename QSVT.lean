@@ -54,3 +54,6 @@ import QSVT.Qubit.Qasm
 import QSVT.SVT.SVD
 import QSVT.SVT.TwoFrame
 import QSVT.SVT.QSVT
+import QSVT.SVT.SingularPair
+import QSVT.SVT.RealPolyGeneral
+import QSVT.Examples.FixedPointAA
