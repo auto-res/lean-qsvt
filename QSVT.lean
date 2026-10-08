@@ -67,3 +67,5 @@ import QSVT.Examples.Loop
 import QSVT.Encoding.Swap
 import QSVT.Encoding.Product
 import QSVT.Qubit.RegBridge
+import QSVT.Certificate.RectExample
+import QSVT.Examples.Threshold

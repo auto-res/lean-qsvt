@@ -36,6 +36,7 @@ import QSVTTest.Inverse
 import QSVTTest.Loop
 import QSVTTest.Product
 import QSVTTest.RegBridge
+import QSVTTest.Threshold
 
 /-!
 # QSVTTest
