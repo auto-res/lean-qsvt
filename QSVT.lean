@@ -21,3 +21,4 @@ import QSVT.SVT.SVTransform
 import QSVT.Encoding.Ancilla
 import QSVT.Encoding.LCU
 import QSVT.SVT.RealPoly
+import QSVT.Polynomial.ChebCoeff
