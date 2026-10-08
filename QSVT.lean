@@ -27,3 +27,5 @@ import QSVT.Encoding.LCUm
 import QSVT.Pipeline.ChebLCU
 import QSVT.QSP.Conversion
 import QSVT.QSP.Perturb
+import QSVT.Circuit.Gadget
+import QSVT.Circuit.Primitive
