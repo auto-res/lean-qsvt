@@ -44,7 +44,7 @@ example : selectOp (fun _ : Fin m => (1 : L ℋ)) = (1 : L (Reg m ℋ)) := selec
 example : matOp (1 : Matrix (Fin m) (Fin m) ℂ) = (1 : L (Reg m ℋ)) := matOp_one
 
 /-- The top-left block of a select operator is its `0`-th entry. -/
-example [NeZero m] (W : Fin m → L ℋ) : topLeft (selectOp W) = W 0 := topLeft_selectOp W
+example [NeZero m] (W : Fin m → L ℋ) : regTopLeft (selectOp W) = W 0 := regTopLeft_selectOp W
 
 /-- `reg0 = |0⟩⟨0| ⊗ 1` is idempotent. -/
 example [NeZero m] : (reg0 : L (Reg m ℋ)) * reg0 = reg0 := reg0_mul_reg0
@@ -61,26 +61,27 @@ example [NeZero m] : householder (Pi.single (0 : Fin m) (1 : ℂ)) = 1 := by
 
 /-- The LCU of `m` copies of a unitary with uniform weights block-encodes that unitary. -/
 example [NeZero m] (U : L ℋ) :
-    topLeft (lcu (householder fun _ : Fin m => ((Real.sqrt (1 / (m : ℝ)) : ℝ) : ℂ))
+    regTopLeft (lcu (householder fun _ : Fin m => ((Real.sqrt (1 / (m : ℝ)) : ℝ) : ℂ))
       fun _ => U) = U := by
   have hm : (m : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (NeZero.ne m)
-  refine (topLeft_lcu_householder (fun _ : Fin m => 1 / (m : ℝ)) (fun _ => U)
+  refine (regTopLeft_lcu_householder (fun _ : Fin m => 1 / (m : ℝ)) (fun _ => U)
     (fun _ => by positivity) (by simp [hm])).trans ?_
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
   simp
 
 /-- `m = 2`, weights `(1/2, 1/2)`: the Householder LCU block-encodes `(U₀ + U₁)/2`, as `lcu2`. -/
 example (U₀ U₁ : L ℋ) :
-    topLeft (lcu (householder fun _ : Fin 2 => ((Real.sqrt (1 / 2) : ℝ) : ℂ)) ![U₀, U₁]) =
+    regTopLeft (lcu (householder fun _ : Fin 2 => ((Real.sqrt (1 / 2) : ℝ) : ℂ)) ![U₀, U₁]) =
       (1 / 2 : ℂ) • (U₀ + U₁) := by
-  refine (topLeft_lcu_householder (fun _ : Fin 2 => (1 / 2 : ℝ)) ![U₀, U₁]
+  refine (regTopLeft_lcu_householder (fun _ : Fin 2 => (1 / 2 : ℝ)) ![U₀, U₁]
     (fun _ => by norm_num) (by norm_num [Fin.sum_univ_two])).trans ?_
   simp [Fin.sum_univ_two, smul_add]
 
 /-- `m = 2`, coefficients `(1/2, −1/2)`: the complex-coefficient LCU block-encodes
 `(U₀ − U₁)/2`. -/
 example (U₀ U₁ : L ℋ) :
-    topLeft (lcu (householder fun k : Fin 2 => ((Real.sqrt ‖![(1 / 2 : ℂ), -(1 / 2)] k‖ : ℝ) : ℂ))
+    regTopLeft
+      (lcu (householder fun k : Fin 2 => ((Real.sqrt ‖![(1 / 2 : ℂ), -(1 / 2)] k‖ : ℝ) : ℂ))
       fun k => phase (![(1 / 2 : ℂ), -(1 / 2)] k) • ![U₀, U₁] k) = (1 / 2 : ℂ) • (U₀ - U₁) := by
   rw [lcu_complex _ _ (by norm_num [Fin.sum_univ_two])]
   simp [Fin.sum_univ_two, sub_eq_add_neg]
@@ -90,9 +91,9 @@ example : ‖phase (3 + 4 * Complex.I)‖ = 1 := norm_phase _
 
 /-! ### Axiom audit: the library must not introduce axioms beyond Lean's standard three. -/
 
-/-- info: 'QSVT.Encoding.topLeft_lcu' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'QSVT.Encoding.regTopLeft_lcu' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms QSVT.Encoding.topLeft_lcu
+#print axioms QSVT.Encoding.regTopLeft_lcu
 
 /-- info: 'QSVT.Encoding.lcu_mem_unitary' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
@@ -106,9 +107,9 @@ example : ‖phase (3 + 4 * Complex.I)‖ = 1 := norm_phase _
 #guard_msgs in
 #print axioms QSVT.Encoding.householder_mulVec_single
 
-/-- info: 'QSVT.Encoding.topLeft_lcu_householder' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'QSVT.Encoding.regTopLeft_lcu_householder' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms QSVT.Encoding.topLeft_lcu_householder
+#print axioms QSVT.Encoding.regTopLeft_lcu_householder
 
 /-- info: 'QSVT.Encoding.lcu_complex' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

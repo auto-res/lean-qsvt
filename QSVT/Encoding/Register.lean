@@ -32,7 +32,7 @@ tensor-product operators `V ⊗ 1` and `∑ₖ |k⟩⟨k| ⊗ Wₖ` in the usual
 
 Both are multiplicative, `matOp (V * W) = matOp V * matOp W`, `selectOp` likewise, their
 adjoints are `matOp Vᴴ` and `selectOp (fun k => (W k)†)`, and they are unitary when their
-ingredients are. The `(0,0)` block `topLeft T = proj 0 ∘ T ∘ inj 0` is the operator
+ingredients are. The `(0,0)` block `regTopLeft T = proj 0 ∘ T ∘ inj 0` is the operator
 block-encoded by `T` (GSLW Def 43), and `reg0 = |0⟩⟨0| ⊗ 1` is the ancilla projector.
 
 ## Contents
@@ -45,9 +45,10 @@ block-encoded by `T` (GSLW Def 43), and `reg0 = |0⟩⟨0| ⊗ 1` is the ancilla
   `matOp_smul`, `matOp_mem_unitary`.
 * `selectOp W` with `proj_selectOp`, `selectOp_one`, `selectOp_mul`, `selectOp_adjoint`,
   `selectOp_add`, `selectOp_smul`, `selectOp_mem_unitary`, `selectOp_const_isProjective`.
-* `topLeft T` (for `[NeZero m]`) with `topLeft_selectOp`, `topLeft_matOp`, `topLeft_add`,
-  `topLeft_smul`.
-* `reg0 = |0⟩⟨0| ⊗ 1`, `reg0_isProjective`, `reg0_mul_mul_reg0`, `topLeft_reg0_mul_mul_reg0`.
+* `regTopLeft T` (for `[NeZero m]`) with `regTopLeft_selectOp`, `regTopLeft_matOp`,
+  `regTopLeft_add`,
+  `regTopLeft_smul`.
+* `reg0 = |0⟩⟨0| ⊗ 1`, `reg0_isProjective`, `reg0_mul_mul_reg0`, `regTopLeft_reg0_mul_mul_reg0`.
 
 ## Mathlib API used
 
@@ -311,34 +312,34 @@ end selectOp
 
 /-! ### The top-left block -/
 
-section topLeft
+section regTopLeft
 
 variable [NeZero m]
 
 /-- ENC-2. The `(0,0)` block `(⟨0| ⊗ 1) T (|0⟩ ⊗ 1) = proj 0 ∘ T ∘ inj 0` of an operator on
 `Reg m ℋ` (GSLW Def 43: the operator block-encoded by `T`). -/
-noncomputable def topLeft (T : L (Reg m ℋ)) : L ℋ := proj 0 ∘ₗ T ∘ₗ inj 0
+noncomputable def regTopLeft (T : L (Reg m ℋ)) : L ℋ := proj 0 ∘ₗ T ∘ₗ inj 0
 
-theorem topLeft_apply (T : L (Reg m ℋ)) (x : ℋ) : topLeft T x = proj 0 (T (inj 0 x)) := rfl
+theorem regTopLeft_apply (T : L (Reg m ℋ)) (x : ℋ) : regTopLeft T x = proj 0 (T (inj 0 x)) := rfl
 
-@[simp] theorem topLeft_selectOp (W : Fin m → L ℋ) : topLeft (selectOp W) = W 0 :=
-  LinearMap.ext fun x => by simp [topLeft_apply]
+@[simp] theorem regTopLeft_selectOp (W : Fin m → L ℋ) : regTopLeft (selectOp W) = W 0 :=
+  LinearMap.ext fun x => by simp [regTopLeft_apply]
 
-@[simp] theorem topLeft_matOp (V : Matrix (Fin m) (Fin m) ℂ) :
-    topLeft (matOp V : L (Reg m ℋ)) = V 0 0 • (1 : L ℋ) :=
-  LinearMap.ext fun x => by simp [topLeft_apply, proj_inj, smul_ite]
+@[simp] theorem regTopLeft_matOp (V : Matrix (Fin m) (Fin m) ℂ) :
+    regTopLeft (matOp V : L (Reg m ℋ)) = V 0 0 • (1 : L ℋ) :=
+  LinearMap.ext fun x => by simp [regTopLeft_apply, proj_inj, smul_ite]
 
-theorem topLeft_add (S T : L (Reg m ℋ)) : topLeft (S + T) = topLeft S + topLeft T := by
-  simp [topLeft, LinearMap.add_comp, LinearMap.comp_add]
+theorem regTopLeft_add (S T : L (Reg m ℋ)) : regTopLeft (S + T) = regTopLeft S + regTopLeft T := by
+  simp [regTopLeft, LinearMap.add_comp, LinearMap.comp_add]
 
-theorem topLeft_smul (c : ℂ) (T : L (Reg m ℋ)) : topLeft (c • T) = c • topLeft T := by
-  simp [topLeft, LinearMap.smul_comp, LinearMap.comp_smul]
+theorem regTopLeft_smul (c : ℂ) (T : L (Reg m ℋ)) : regTopLeft (c • T) = c • regTopLeft T := by
+  simp [regTopLeft, LinearMap.smul_comp, LinearMap.comp_smul]
 
-@[simp] theorem topLeft_one : topLeft (1 : L (Reg m ℋ)) = 1 := by
-  rw [← selectOp_one, topLeft_selectOp]
+@[simp] theorem regTopLeft_one : regTopLeft (1 : L (Reg m ℋ)) = 1 := by
+  rw [← selectOp_one, regTopLeft_selectOp]
 
-@[simp] theorem topLeft_zero : topLeft (0 : L (Reg m ℋ)) = 0 := by
-  rw [← selectOp_zero, topLeft_selectOp]
+@[simp] theorem regTopLeft_zero : regTopLeft (0 : L (Reg m ℋ)) = 0 := by
+  rw [← selectOp_zero, regTopLeft_selectOp]
 
 /-! ### The ancilla projector `|0⟩⟨0| ⊗ 1` -/
 
@@ -368,23 +369,24 @@ theorem reg0_apply (v : Reg m ℋ) : reg0 v = inj 0 (proj 0 v) :=
 theorem reg0_isProjective : IsProjective (reg0 : L (Reg m ℋ)) :=
   isProjective_iff_isStarProjection.mpr ⟨reg0_mul_reg0, reg0_adjoint⟩
 
-@[simp] theorem topLeft_reg0 : topLeft (reg0 : L (Reg m ℋ)) = 1 := by
-  rw [reg0, topLeft_selectOp]
+@[simp] theorem regTopLeft_reg0 : regTopLeft (reg0 : L (Reg m ℋ)) = 1 := by
+  rw [reg0, regTopLeft_selectOp]
   simp
 
 /-- ENC-2. Compressing by the ancilla projector keeps only the `(0,0)` block. -/
 theorem reg0_mul_mul_reg0 (T : L (Reg m ℋ)) :
-    reg0 * T * reg0 = selectOp fun k => if k = 0 then topLeft T else 0 := by
+    reg0 * T * reg0 = selectOp fun k => if k = 0 then regTopLeft T else 0 := by
   refine LinearMap.ext fun v => ext_reg fun j => ?_
   simp only [Module.End.mul_apply, reg0_apply, proj_selectOp, proj_inj]
   split_ifs with h
   · subst h; rfl
   · rfl
 
-theorem topLeft_reg0_mul_mul_reg0 (T : L (Reg m ℋ)) : topLeft (reg0 * T * reg0) = topLeft T := by
-  rw [reg0_mul_mul_reg0, topLeft_selectOp]
+theorem regTopLeft_reg0_mul_mul_reg0 (T : L (Reg m ℋ)) :
+    regTopLeft (reg0 * T * reg0) = regTopLeft T := by
+  rw [reg0_mul_mul_reg0, regTopLeft_selectOp]
   simp
 
-end topLeft
+end regTopLeft
 
 end QSVT.Encoding

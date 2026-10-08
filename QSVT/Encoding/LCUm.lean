@@ -15,10 +15,10 @@ with state-preparation matrix `V : Matrix (Fin m) (Fin m) ℂ` and unitaries `W 
 
 It is unitary when `V` and all `Wₖ` are (`lcu_mem_unitary`), and its top-left block is
 
-`topLeft (lcu V W) = ∑ₖ |V k 0|² • Wₖ` (`topLeft_lcu`),
+`regTopLeft (lcu V W) = ∑ₖ |V k 0|² • Wₖ` (`regTopLeft_lcu`),
 
 i.e. the LCU block-encodes `∑ₖ wₖ Wₖ` whenever the first column of `V` is `(√wₖ)ₖ`
-(`topLeft_lcu_of_real`).
+(`regTopLeft_lcu_of_real`).
 
 ## State preparation by a Householder reflection
 
@@ -32,10 +32,10 @@ weights enter as `√wₖ ≥ 0`; a general complex `u` can be handled by first 
 
 ## Main statements
 
-* `topLeft_lcu_householder`: for weights `w ≥ 0` with `∑ w = 1`,
-  `topLeft (lcu (householder (√w)) W) = ∑ₖ wₖ • Wₖ` (Route A of GSLW Lemma 52).
+* `regTopLeft_lcu_householder`: for weights `w ≥ 0` with `∑ w = 1`,
+  `regTopLeft (lcu (householder (√w)) W) = ∑ₖ wₖ • Wₖ` (Route A of GSLW Lemma 52).
 * `lcu_complex`: complex coefficients `c` with `∑ ‖cₖ‖ = 1` are absorbed into the unitaries,
-  `topLeft (lcu (householder (√‖c‖)) (fun k => phase (cₖ) • Wₖ)) = ∑ₖ cₖ • Wₖ`, where
+  `regTopLeft (lcu (householder (√‖c‖)) (fun k => phase (cₖ) • Wₖ)) = ∑ₖ cₖ • Wₖ`, where
   `phase z = z / ‖z‖` (`1` for `z = 0`) is a unit scalar, so `phase (cₖ) • Wₖ` is unitary
   (`smul_mem_unitary_of_norm_eq_one`).
 
@@ -76,19 +76,19 @@ theorem lcu_mem_unitary (hV : V ∈ Matrix.unitaryGroup (Fin m) ℂ)
     (matOp_mem_unitary V hV)
 
 /-- ENC-3 / GSLW Lemma 52. The top-left block of the LCU circuit is `∑ₖ |V k 0|² • Wₖ`. -/
-theorem topLeft_lcu [NeZero m] :
-    topLeft (lcu V W) = ∑ k, (star (V k 0) * V k 0) • W k := by
+theorem regTopLeft_lcu [NeZero m] :
+    regTopLeft (lcu V W) = ∑ k, (star (V k 0) * V k 0) • W k := by
   refine LinearMap.ext fun x => ?_
-  simp only [topLeft_apply, lcu, Module.End.mul_apply, proj_matOp, proj_selectOp, proj_inj,
+  simp only [regTopLeft_apply, lcu, Module.End.mul_apply, proj_matOp, proj_selectOp, proj_inj,
     smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, map_smul,
     Matrix.conjTranspose_apply, smul_smul, LinearMap.sum_apply, LinearMap.smul_apply]
 
 /-- ENC-3. If the first column of `V` is `(√wₖ)ₖ` with `wₖ ≥ 0`, the LCU circuit
 block-encodes `∑ₖ wₖ • Wₖ`. -/
-theorem topLeft_lcu_of_real [NeZero m] (w : Fin m → ℝ) (hw : ∀ k, 0 ≤ w k)
+theorem regTopLeft_lcu_of_real [NeZero m] (w : Fin m → ℝ) (hw : ∀ k, 0 ≤ w k)
     (hV0 : ∀ k, V k 0 = ((Real.sqrt (w k) : ℝ) : ℂ)) :
-    topLeft (lcu V W) = ∑ k, (w k : ℂ) • W k := by
-  rw [topLeft_lcu]
+    regTopLeft (lcu V W) = ∑ k, (w k : ℂ) • W k := by
+  rw [regTopLeft_lcu]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [hV0, Complex.star_def, Complex.conj_ofReal, ← Complex.ofReal_mul,
     Real.mul_self_sqrt (hw k)]
@@ -235,10 +235,10 @@ variable [NeZero m] (w : Fin m → ℝ) (W : Fin m → L ℋ)
 
 /-- ENC-3 / GSLW Lemma 52. The state-preparation matrix `householder (√w)` has first column
 `√w`, so the LCU circuit block-encodes `∑ₖ wₖ • Wₖ`. -/
-theorem topLeft_lcu_householder (hw : ∀ k, 0 ≤ w k) (hsum : ∑ k, w k = 1) :
-    topLeft (lcu (householder fun k => ((Real.sqrt (w k) : ℝ) : ℂ)) W) =
+theorem regTopLeft_lcu_householder (hw : ∀ k, 0 ≤ w k) (hsum : ∑ k, w k = 1) :
+    regTopLeft (lcu (householder fun k => ((Real.sqrt (w k) : ℝ) : ℂ)) W) =
       ∑ k, (w k : ℂ) • W k :=
-  topLeft_lcu_of_real _ W w hw fun k =>
+  regTopLeft_lcu_of_real _ W w hw fun k =>
     householder_apply_zero _ (sum_norm_sq_ofReal_sqrt w hw hsum) (Complex.ofReal_im _) k
 
 /-- ENC-3. The LCU circuit with the Householder state preparation is unitary. -/
@@ -248,8 +248,8 @@ theorem lcu_householder_mem_unitary (hW : ∀ k, W k ∈ unitary (L ℋ)) :
 
 /-- ENC-3. Existence form: every probability vector `w` is realized by some unitary `V`. -/
 theorem lcu_weights (hw : ∀ k, 0 ≤ w k) (hsum : ∑ k, w k = 1) :
-    ∃ V ∈ Matrix.unitaryGroup (Fin m) ℂ, topLeft (lcu V W) = ∑ k, (w k : ℂ) • W k :=
-  ⟨_, householder_mem_unitaryGroup _, topLeft_lcu_householder w W hw hsum⟩
+    ∃ V ∈ Matrix.unitaryGroup (Fin m) ℂ, regTopLeft (lcu V W) = ∑ k, (w k : ℂ) • W k :=
+  ⟨_, householder_mem_unitaryGroup _, regTopLeft_lcu_householder w W hw hsum⟩
 
 end weights
 
@@ -289,9 +289,9 @@ variable [NeZero m] (c : Fin m → ℂ) (W : Fin m → L ℋ)
 /-- ENC-3. Complex coefficients `c` with `∑ ‖cₖ‖ = 1`: absorbing the phases into the
 unitaries, the LCU circuit with weights `‖cₖ‖` block-encodes `∑ₖ cₖ • Wₖ`. -/
 theorem lcu_complex (hc : ∑ k, ‖c k‖ = 1) :
-    topLeft (lcu (householder fun k => ((Real.sqrt ‖c k‖ : ℝ) : ℂ))
+    regTopLeft (lcu (householder fun k => ((Real.sqrt ‖c k‖ : ℝ) : ℂ))
       fun k => phase (c k) • W k) = ∑ k, c k • W k := by
-  rw [topLeft_lcu_householder (fun k => ‖c k‖) _ (fun k => norm_nonneg _) hc]
+  rw [regTopLeft_lcu_householder (fun k => ‖c k‖) _ (fun k => norm_nonneg _) hc]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [smul_smul, norm_mul_phase]
 
