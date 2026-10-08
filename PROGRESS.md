@@ -3,6 +3,17 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (5) — 固定点振幅増幅，線形方程式，言語層の表面構文
+
+- **APP-1 固定点振幅増幅（GSLW Thm 27）**: `SVT/SingularPair.lean`（任意の特異ベクトル対に対する 2 フレーム補題），`SVT/RealPolyGeneral.lean`（一般符号化の Cor 18），
+  `Examples/FixedPointAA.lean`: $U$，良い部分空間の射影 $G$，$G U\psi_0 = a\,\psi_G$ から rank-1 符号化を作り，証明済み sign21 位相で $a\ge0.15\Rightarrow$ 成功振幅 $\ge0.869$（21 クエリ，86 ゲート）．
+- **APP-3 線形方程式の多項式ステップ**: $\kappa=4$，次数 29 の奇多項式で $c/(\kappa x)$（$c=3/4$）を相対誤差 $10^{-3}$ で近似（LP による minimax，LeanCert Bernstein 証明書 115 s）．
+  `Examples/Inverse.lean`: 固有値 $|\lambda|\ge1/4$ で $A^{-1}$ 方向に作用（435 クエリ，Route A）．$c=1$ は $|p|\le1$ の制約で不可能に近い（折れ点）という知見を docstring に記録．
+- **LANG-1 言語層**: `ExprQ`（有理データ）と記法 `qsvt[Φ] U₀`，`poly[l] U₀`，コスト関数と IR との一致定理，`baseQ_eq`（表面構文で書いたプログラムに正しさ定理が付く），
+  `#qsvt_info` コマンド（クエリ数・補助次元・次数上界・スケール・ゲート数・OpenQASM を表示）．
+- 規模: Lean 約 18,500 行，sorry なし，公理は標準 3 つ．
+- 未着手: APP-2（閾値射影），APP-5（ループを含む例），ENC-4（積）と IR の `prod`，$m$ レジスタの qubit 橋渡し，QSP-7b（相補多項式の存在）．
+
 ## 2026-10-09 (4) — 一般 QSVT 定理（G1 達成），qubit 層とコンパイル，$e^{-2iA}$
 
 - **SVT-6/7 `qsvt_odd`/`qsvt_even`**（`QSVT/SVT/QSVT.lean`）: 任意の射影ユニタリ符号化で $\tilde\Pi U_\Phi\Pi = P_\Phi^{(SV)}(A)$（奇），$\Pi U_\Phi \Pi = P_\Phi^{(SV)}(A)$（偶）．

@@ -25,6 +25,7 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
   - `QSVT/Certificate/` — LeanCert による証明書（明示多項式の区間評価，位相列の Chebyshev 係数検査器）
   - `QSVT/Examples/` — 応用例（符号関数近似の Route A / Route B 実装，$\cos 2A$）
   - `QSVT/Qubit/` — qubit レジスタ，ゲート，直和モデルとの等長同型，qubit 回路へのコンパイルと OpenQASM 出力
+  - `QSVT/Lang/` — 表面構文（`qsvt[Φ] U₀`，`poly[l] U₀`）と `#qsvt_info` コマンド
 - `test/` — 回帰テスト（`lake test`）
 - `00note/` — 計画・仕様・調査メモ
 - `tools/` — 位相角ソルバーなどの外部ツール（untrusted）
@@ -63,6 +64,25 @@ lake test            # test/ 以下のテストをビルド
 | $\cos(2A)$ の近似（Hamiltonian simulation の実部） | `cosCircuit_apply` | `QSVT/Examples/CosEvolution.lean` |
 | $e^{-2iA}$ の近似（複素係数 Route A，Hamiltonian simulation） | `evoCircuit_apply` | `QSVT/Examples/Evolution.lean` |
 | qubit 回路へのコンパイルの正しさと OpenQASM 3 出力 | `compileQ_qsvtReal`, `toQasm` | `QSVT/Qubit/Compile.lean`, `Qasm.lean` |
+| 固定点振幅増幅（GSLW Thm 27）: 初期重なり $\ge0.15$ から成功振幅 $\ge0.869$，21 クエリ | `fixedPointAA_amplitude` | `QSVT/Examples/FixedPointAA.lean` |
+| 線形方程式の多項式ステップ（$\kappa=4$，相対誤差 $10^{-3}$） | `invCircuit_apply_pos` | `QSVT/Examples/Inverse.lean` |
+| 表面構文で書いたプログラムの正しさとコスト | `baseQ_eq`, `queriesQ_eq` | `QSVT/Lang/ExprQ.lean` |
+
+### 使い方の例（表面構文）
+
+```lean
+import QSVT
+open QSVT.Lang
+
+-- 証明済みの 21 個の位相で符号関数近似を実装するプログラム
+#qsvt_info qsvt[QSVT.Certificate.sign21Phases] U₀
+-- 出力: queries 21, ancilla 1 qubit, 86 gates, OpenQASM 3 ...
+
+-- 4x³ − 3x を Chebyshev-LCU（Route A）で exact に実装するプログラム
+#qsvt_info poly[[0, -3, 0, 4]] U₀
+```
+
+どちらのプログラムにも `baseQ_eq`（圧縮した左上ブロック $= \|c\|_1^{-1}\,\mathrm{spec}(A)\,P$）と `queriesQ_eq`（クエリ数）が定理として付きます．
 
 ### 使い方の例（Route A，概略．厳密な形は `test/QSVTTest/ChebLCU.lean` を参照）
 
