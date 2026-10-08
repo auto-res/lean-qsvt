@@ -32,6 +32,7 @@ import QSVTTest.QubitCompile
 import QSVTTest.QSVT
 import QSVTTest.FixedPointAA
 import QSVTTest.Lang
+import QSVTTest.Inverse
 
 /-!
 # QSVTTest
