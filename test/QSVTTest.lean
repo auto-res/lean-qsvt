@@ -22,6 +22,7 @@ import QSVTTest.Circuit
 import QSVTTest.Existence
 import QSVTTest.IR
 import QSVTTest.Certificate
+import QSVTTest.Examples
 
 /-!
 # QSVTTest
