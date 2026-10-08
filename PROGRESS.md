@@ -3,6 +3,18 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-09 (4) — 一般 QSVT 定理（G1 達成），qubit 層とコンパイル，$e^{-2iA}$
+
+- **SVT-6/7 `qsvt_odd`/`qsvt_even`**（`QSVT/SVT/QSVT.lean`）: 任意の射影ユニタリ符号化で $\tilde\Pi U_\Phi\Pi = P_\Phi^{(SV)}(A)$（奇），$\Pi U_\Phi \Pi = P_\Phi^{(SV)}(A)$（偶）．
+  SVD は $A^\dagger A$ の固有基底から最小限に構成（`SVD.lean`），2 フレームの帰納法（`TwoFrame.lean`）は $\sigma\in\{0,1\}$ でも場合分け不要（$(\sqrt0)^{-1}=0$ の規約で枠ベクトルが消える）．
+  Hermitian 版 `qet` は系として再導出（`qet_of_qsvt`）．
+- **CIRC-1/4/5/6**（`QSVT/Qubit/`）: qubit レジスタ `Qubits n = EuclideanSpace ℂ (Fin n → Bool)`，等長同型 `ancEquiv : Anc (Qubits n) ≃ Qubits (n+1)`，
+  `liftAnc (cpiNot (diagProj d)) = ctrlX d`（$C_\Pi$NOT = 多重制御 X，一般の対角 0/1 射影で証明），`compileQ_qsvtReal`（qubit ゲート列の意味が Route B ユニタリに一致），
+  OpenQASM 3 出力 `toQasm`（untrusted．sign21 の回路は 86 ゲート: `negctrl(2) @ x`，`rz`，`h`，opaque な `U_oracle`）．
+- **APP-4 完成**: $\sin 2x$ の証明書（Taylor 橋渡し + Bernstein）と複素係数 Route A による $e^{-2iA}/\|c\|_1$（誤差 $2\times10^{-6}/\|c\|_1$，66 クエリ）．
+- 規模: Lean 約 16,000 行，sorry なし，公理は標準 3 つ．`lake build` 3848 ジョブ．
+- 次: 固定点振幅増幅（Thm 27，rank-1 符号化 + `qsvt_odd`），擬似逆 $1/x$ の証明書と線形方程式の例，言語層の表面構文（`#qsvt_info`），ENC-4 積と IR の `prod`．
+
 ## 2026-10-09 (3) — Route B 完成（M4），証明書付き応用例 2 件
 
 - **CERT-B 完成**: LeanCert v4.34.1 を依存に追加（`lake update leancert` 11 s，LeanCert ソースビルド 3 分 22 秒，以後キャッシュ）．

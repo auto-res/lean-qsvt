@@ -24,7 +24,7 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
   - `QSVT/IR/` — 抽象プログラム IR（`Expr`，`denote`，`spec`，健全性，クエリ数）
   - `QSVT/Certificate/` — LeanCert による証明書（明示多項式の区間評価，位相列の Chebyshev 係数検査器）
   - `QSVT/Examples/` — 応用例（符号関数近似の Route A / Route B 実装，$\cos 2A$）
-  - `QSVT/Qubit/` — qubit レジスタと直和モデルの橋渡し（進行中）
+  - `QSVT/Qubit/` — qubit レジスタ，ゲート，直和モデルとの等長同型，qubit 回路へのコンパイルと OpenQASM 出力
 - `test/` — 回帰テスト（`lake test`）
 - `00note/` — 計画・仕様・調査メモ
 - `tools/` — 位相角ソルバーなどの外部ツール（untrusted）
@@ -50,6 +50,7 @@ lake test            # test/ 以下のテストをビルド
 | 回転規約↔反射規約（GSLW Cor 8 の対応，式 (16) の符号修正済） | `seqW_eq_seqR`, `seqW_apply_zero_zero_eq` | `QSVT/QSP/Conversion.lean` |
 | 位相の存在（GSLW Thm 3 ⇐） | `exists_phases`, `exists_phases_R` | `QSVT/QSP/Existence.lean` |
 | **QET**: $P\,U_\Phi\,P = P_\Phi(A)\,P$（Hermitian ブロック符号化，SVD 不要） | `qet`, `qet_chebyshev` | `QSVT/SVT/QET.lean` |
+| **QSVT（GSLW Thm 17）**: $\tilde\Pi\,U_\Phi\,\Pi = P_\Phi^{(SV)}(A)$（一般の射影ユニタリ符号化，SVD 不要） | `qsvt_odd`, `qsvt_even` | `QSVT/SVT/QSVT.lean` |
 | 実多項式版（GSLW Cor 18）と合成子 `qsvtReal` | `qet_real`, `qsvtReal_encoded` | `QSVT/SVT/RealPoly.lean` |
 | $\|p(A)x\| \le \|p\|_\infty \|x\|$ | `norm_aeval_apply_le` | `QSVT/SVT/NormBound.lean` |
 | $m$ 項 LCU と Householder 状態準備 | `topLeft_lcu`, `lcu_complex` | `QSVT/Encoding/LCUm.lean` |
@@ -60,6 +61,8 @@ lake test            # test/ 以下のテストをビルド
 | 次数 21 の符号関数近似の証明書（LeanCert，kernel） | `supNorm_sign21_le_one`, `norm_eval_sign21_sub_scale_le`, `sign21_checkRe` | `QSVT/Certificate/Sign21*.lean` |
 | **Route B**: 21 クエリ・補助 1 qubit で符号関数近似を実装 | `signB_apply_pos`, `signB_oracleCount` | `QSVT/Examples/Sign21RouteB.lean` |
 | $\cos(2A)$ の近似（Hamiltonian simulation の実部） | `cosCircuit_apply` | `QSVT/Examples/CosEvolution.lean` |
+| $e^{-2iA}$ の近似（複素係数 Route A，Hamiltonian simulation） | `evoCircuit_apply` | `QSVT/Examples/Evolution.lean` |
+| qubit 回路へのコンパイルの正しさと OpenQASM 3 出力 | `compileQ_qsvtReal`, `toQasm` | `QSVT/Qubit/Compile.lean`, `Qasm.lean` |
 
 ### 使い方の例（Route A，概略．厳密な形は `test/QSVTTest/ChebLCU.lean` を参照）
 
