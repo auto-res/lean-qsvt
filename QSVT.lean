@@ -64,3 +64,5 @@ import QSVT.Certificate.InvExample
 import QSVT.Examples.Inverse
 import QSVT.Lang.Loop
 import QSVT.Examples.Loop
+import QSVT.Encoding.Swap
+import QSVT.Encoding.Product
