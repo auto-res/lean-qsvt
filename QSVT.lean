@@ -51,3 +51,6 @@ import QSVT.Certificate.SinExample
 import QSVT.Examples.Evolution
 import QSVT.Qubit.Compile
 import QSVT.Qubit.Qasm
+import QSVT.SVT.SVD
+import QSVT.SVT.TwoFrame
+import QSVT.SVT.QSVT
