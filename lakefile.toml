@@ -14,6 +14,11 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.34.1"
 
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert"
+rev = "v4.34.1"
+
 [[lean_lib]]
 name = "QSVT"
 

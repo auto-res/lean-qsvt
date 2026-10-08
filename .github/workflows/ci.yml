@@ -20,6 +20,8 @@ jobs:
 
       - name: Build Lean project with Mathlib cache
         # leanprover/lean-action@v1 pinned to a specific sha for reproducibility.
+        # Mathlib comes from the cache; LeanCert (dependency of QSVT.Certificate.*) has no
+        # cached oleans and is compiled from source here, which adds about five minutes.
         uses: leanprover/lean-action@434f25c2f80ded67bba02502ad3a86f25db50709
         with:
           use-mathlib-cache: true
