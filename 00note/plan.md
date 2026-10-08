@@ -91,6 +91,7 @@
 | D5 | **位相角は untrusted，Lean は証明書を検査**．並行して **数値を使わない Route A（Chebyshev-LCU）** を持つ | 証明付き数値計算（LeanCert / girving/interval）の成熟度・バージョン整合に依存しない退路を確保．Route A はクエリ数が $O(d^2)$ で劣るが完全に exact |
 | D6 | **誤差 ε と正規化 α は型に載せる**: `BlockEncoding (α ε : ℝ) (a : ℕ) (A : L ℋ)` | GSLW Def 43 そのもの．合成則（LCU，積，QSVT）が誤差伝播の定理になる |
 | D7 | **コア IR は純ユニタリ**．量子データ上の分岐は制御ユニタリ（$C_\Pi\mathrm{NOT}$，多重制御位相）に，古典ループはメタ言語（Lean）の再帰に，観測は最上位の `run`／channel に限定 | 「観測で状態が壊れる」問題への構造的回答．補助量子ビットが $\ket{0}$ に戻ることは ブロック符号化述語そのものが保証する |
+| D8 | **補助量子ビットは直和で表す**: `Anc ℋ := WithLp 2 (ℋ × ℋ)`，作用素は `L ℋ` 成分の 2×2 ブロック．$m$ 項 LCU は `PiLp 2 (fun _ : Fin m => ℋ)` に拡張 | テンソル積 `ℂ² ⊗ ℋ` の基底非依存な取り回し（lean-quantum の `basisPiTensor*`）を持ち込まずに Cor 18・Lemma 19 が書ける．qubit テンソル積との対応は回路層（Phase 5）で付ける |
 
 ---
 

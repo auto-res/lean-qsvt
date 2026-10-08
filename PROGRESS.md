@@ -3,6 +3,44 @@
 進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
 [00note/formal-spec.md](00note/formal-spec.md) を参照．
 
+## 2026-10-08 — Phase 0 完了，Phase 1 (QSP) 完了，Phase 2a (QET) 組み立て中
+
+subagent による並列開発（1 エージェント＝1 ファイル集合，親がコミット）で進めた．
+全モジュール sorry なし，公理は標準 3 つのみ（各テストファイルで `#print axioms` 監査）．
+
+### Phase 0（済）
+- リポジトリを `auto-res/lean-qsvt` へ移管．開発ブランチ `ss`（`00note/prompt.md` は `ss` のみ）．
+- 調査 `00note/survey.md`: LeanCert v4.34.1 採用（kernel 検証の区間演算），lean-quantum は
+  v4.34.1 で `QuantumChannel` が壊れるため `QuantumState` 相当を `QSVT/Operator/Basic.lean` に複製，
+  Mathlib に SVD 無しを確認．ツール選定は `00note/tooling.md`．
+- 数値検算 `tools/phases/`: GSLW 式 (16) の符号誤りを発見（正: $W=i\,e^{-i\pi/4\sigma_z}Re^{-i\pi/4\sigma_z}$），
+  反射規約の多項式再帰を確定（$Q$ は左下成分），pyqsp / qsppack の規約を記録．
+
+### Phase 1（済）: `QSVT/QSP/`
+- QSP-3 `Poly.lean`, `Structure.lean`: `qspPoly` と評価定理 `seqR_eval`，次数・parity・単位恒等式，`qspPoly_neg`．
+- QSP-4 `Chebyshev.lean`: `chebPhases d` で `seqR` の全行列が $[[T_d, U_{d-1}s],[\pm U_{d-1}s, \pm T_d]]$．
+- QSP-5 `Endpoints.lean`: $x=\pm1, 0$ の閉形式．
+
+### 多項式層（済）: `QSVT/Polynomial/`
+- `Parity.lean`（parity 補題を集約），`SqrtPart.lean`（`evenRoot`/`oddRoot`），`SupNorm.lean`，
+  `Chebyshev.lean`（`ChebSeries`，`supNorm_toPoly_le_l1`）．
+
+### Phase 2a（進行中）: `QSVT/Encoding/`, `QSVT/SVT/`
+- ENC-1 `Projected.lean`（射影は `P`/`P'`），SVT-2 `PhaseOp.lean`，SVT-1 `AltSeq.lean`．
+- SVT-3 部品: `EigenBasis.lean`（ran P 上の固有基底，`ext_of_eigenVec`），`TwoVector.lean`
+  （関係式 (R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen`）．
+  注: Hermitian の場合でも $\psi^\perp$（$U^\dagger$ 側）と $\tilde\psi^\perp$（$U$ 側）は位相だけ異なり得るので両方を使う．
+- 進行中: `QET.lean`（`qet`: $P\,U_\Phi\,P = P_\Phi(A)\,P$），`NormBound.lean`（SVT-4），`SVTransform.lean`（SVT-5），
+  `Ancilla.lean`/`LCU.lean`（D8: 補助 qubit を直和で表現，2 項 LCU）．
+
+### ビルド
+- `lake build` 2775 ジョブ，増分 6 s．`lake test` 8 s．
+
+### 次のアクション
+- `qet` 完成後: Cor 18（`SVT-8`，実多項式）を `lcu2` と `qspPoly_neg` で組み立てる．
+- Route A（CERT-A）: `ChebSeries` の各 $T_k$ を `chebPhases k` の QET で実装し，$m$ 項 LCU（`PiLp`）で合成．
+- IR-1/2: コンビネータとコスト関数．QSP-2 の Lean 化は Route B 着手時．
+
 ## 2026-10-08 — Phase 0: プロジェクト骨組みの作成
 
 ### 環境

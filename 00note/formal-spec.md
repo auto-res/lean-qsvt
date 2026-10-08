@@ -6,6 +6,28 @@
 - 難易度: ★（定義・簡単な補題）〜 ★★★★（数週間規模）．
 - Lean シグネチャは**方向性を示すスケッチ**であり，Phase 0 の API 確認後に確定する．
 
+## 進捗と命名の差異（2026-10-08 更新）
+
+| ID | 状態 | Lean での実体（spec からの差異） |
+|---|---|---|
+| POLY-1/2 | 済 | `QSVT/Polynomial/Parity.lean`．`HasParity P n := (Even n → IsEven P) ∧ (Odd n → IsOdd P)` もここ |
+| POLY-3 | 済 | `SqrtPart.lean`: `sqrtPart` ではなく `evenRoot P := contract 2 P`，`oddRoot P := contract 2 P.divX`．`IsEven.eq_evenRoot_comp`，`IsOdd.eq_X_mul_oddRoot_comp` |
+| POLY-4 | 済 | `SupNorm.lean`: `supNorm`，`norm_eval_le_supNorm`，`supNorm_le_of_forall`（$0\le M$ 不要），`supNorm_le_sum_norm_coeff` |
+| POLY-5/6 | 済 | `Chebyshev.lean`: ℕ 添字ラッパ `T_eval_cos`，`norm_eval_T_le_one`，`T_parity`，`natDegree_T`；`ChebSeries`（`toPoly`，`l1`，`supNorm_toPoly_le_l1`）．`chebCoeff`（単項式→Chebyshev 変換）は未実装 |
+| QSP-1 | 済 | `QSP/Conventions.lean` |
+| QSP-2 | 未 | 数値検証済（qsp-convention-check.md）．Lean 化は Route B 着手時 |
+| QSP-3 | 済 | `QSP/Poly.lean`（`qspPoly4`，`qspPoly`，`conjP`，`negX`），`QSP/Structure.lean`（`seqR_eval4`，`seqR_eval`，`natDegree_*_le`，`hasParity_*`，`norm_identity`，`qspPoly_neg`，`seqR_apply_zero_zero/one_zero`） |
+| QSP-4 | 済 | `QSP/Chebyshev.lean`: `chebPhases`，`seqR_chebPhases_eq`（全行列，$d\ge 0$），`seqR_chebPhases` |
+| QSP-5 | 済 | `QSP/Endpoints.lean`: `seqR_one`，`seqR_neg_one`，`alt`，`seqR_zero_of_even/odd` |
+| QSP-6/7 | 未 | — |
+| ENC-1 | 済 | `Encoding/Projected.lean`: 射影のフィールド名は `P`（$\Pi$），`P'`（$\tilde\Pi$）．`Π` は Lean の識別子に使えない．`HermitianEncoding`（`P'_eq`，`encoded_selfAdjoint`） |
+| ENC-2/3 | 進行中 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`（直和）で表し，2×2 ブロック作用素 `block`，`blockDiag`，`anc0`，`hadA`，`lcu2`（`Encoding/Ancilla.lean`，`LCU.lean`）．テンソル積は回路層まで使わない |
+| SVT-1/2 | 済 | `SVT/AltSeq.lean`（`altSeq`，`altSeq_mem_unitary`，`altSeq_one/two/three`），`SVT/PhaseOp.lean` |
+| SVT-3 | 進行中 | `SVT/EigenBasis.lean`（`eigenVec`，`eigenValue`，`aeval_eigenVec`，`ext_of_eigenVec`），`SVT/TwoVector.lean`（(R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen(_eval)`）は済．`SVT/QET.lean`（`qet`，`qet_chebyshev`）を組み立て中 |
+| SVT-4/5 | 進行中 | `SVT/NormBound.lean`（ベクトル形 `‖aeval A p x‖ ≤ supNorm p * ‖x‖`），`SVT/SVTransform.lean`（`svTransform`，`svTransform_eq_aeval`） |
+| 作用素層 | 済 | `Operator/Basic.lean`: lean-quantum の `QuantumState` 名前空間を同名で複製（Apache-2.0 表示） |
+
+
 ---
 
 ## 0. 記法と規約
