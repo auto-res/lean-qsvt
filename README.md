@@ -5,6 +5,7 @@
 QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック符号化・交代列・QSVT 定理
 （Gilyén–Su–Low–Wiebe 2019）を経て，位相角パイプラインと回路コンパイラまでを目標とします．
 
+- **言語仕様と使い方: [doc/language.md](doc/language.md)**
 - 計画: [00note/plan.md](00note/plan.md)
 - 形式化仕様（定義・定理の ID 一覧）: [00note/formal-spec.md](00note/formal-spec.md)
 - 進捗ログ: [PROGRESS.md](PROGRESS.md)
