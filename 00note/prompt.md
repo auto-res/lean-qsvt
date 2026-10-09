@@ -32,3 +32,12 @@ auto-res/lean-qsvt-dev
 subagent を使ってトークンを節約しつつ効率的に開発を進めてください．
 lean project は cache を利用してビルド時間の短縮を図ってください．
 必要に応じて LeanArchitect などの開発支援ツールを利用してください．今回は形式化が目的ではないので，別のツールがよいかもしれません．
+
+---
+
+開発した言語の仕様といくつかの使い方を説明する markdown document を doc/ に生成してください
+
+00note/prompt.md 以外のファイルを dev/ に移動してください．
+
+その後， main branch に PR merge してください．
+00note/prompt.md, {agents,progress}.md は不要です

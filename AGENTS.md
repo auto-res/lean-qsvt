@@ -1,7 +1,7 @@
 # Guidance for AI coding agents (lean-qsvt)
 
-Conventions for agents working in this repository. The plan is `00note/plan.md`, the
-formal specification with theorem IDs (QSP-3, SVT-7, ...) is `00note/formal-spec.md`,
+Conventions for agents working in this repository. The plan is `dev/plan.md`, the
+formal specification with theorem IDs (QSP-3, SVT-7, ...) is `dev/formal-spec.md`,
 the dated log is `PROGRESS.md`. Humans follow the same rules.
 
 ## Repository and git
@@ -10,7 +10,8 @@ the dated log is `PROGRESS.md`. Humans follow the same rules.
 - Subagents never run `git add/commit/push`; the parent session commits. Report the list of
   files you created or changed instead.
 - One agent per disjoint file set. Never edit a file another agent owns in the same wave.
-- `00note/` holds private notes (Japanese). Do not publish it anywhere.
+- `dev/` holds the development notes (plan, spec, surveys; Japanese). `00note/prompt.md` is a private
+  note that exists only on branch `ss`; never add it to `main`.
 
 ## Build
 
@@ -45,7 +46,7 @@ the dated log is `PROGRESS.md`. Humans follow the same rules.
 - `Mathlib.Data.Complex.Basic` is deprecated in favour of `Mathlib.Basic.Complex.Basic`;
   `if_pos`/`if_neg` deprecated in favour of `ite_eq_left`/`ite_eq_right`.
 - `!![…]` and `Matrix.mul_fin_two` are in `Mathlib.LinearAlgebra.Matrix.Notation`.
-- There is no SVD in Mathlib: use the SVD-free definitions of `00note/formal-spec.md` §4.
+- There is no SVD in Mathlib: use the SVD-free definitions of `dev/formal-spec.md` §4.
 
 ## Reporting
 

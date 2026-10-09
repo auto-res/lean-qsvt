@@ -1,7 +1,7 @@
 # PROGRESS
 
-進捗ログ（新しいものを上に）．計画は [00note/plan.md](00note/plan.md)，仕様 ID は
-[00note/formal-spec.md](00note/formal-spec.md) を参照．
+進捗ログ（新しいものを上に）．計画は [dev/plan.md](dev/plan.md)，仕様 ID は
+[dev/formal-spec.md](dev/formal-spec.md) を参照．
 
 ## 2026-10-09 (9) — 線形方程式 + 固定点振幅増幅（Thm 41 相当，heavy）
 
@@ -111,9 +111,9 @@ subagent による並列開発（1 エージェント＝1 ファイル集合，�
 
 ### Phase 0（済）
 - リポジトリを `auto-res/lean-qsvt` へ移管．開発ブランチ `ss`（`00note/prompt.md` は `ss` のみ）．
-- 調査 `00note/survey.md`: LeanCert v4.34.1 採用（kernel 検証の区間演算），lean-quantum は
+- 調査 `dev/survey.md`: LeanCert v4.34.1 採用（kernel 検証の区間演算），lean-quantum は
   v4.34.1 で `QuantumChannel` が壊れるため `QuantumState` 相当を `QSVT/Operator/Basic.lean` に複製，
-  Mathlib に SVD 無しを確認．ツール選定は `00note/tooling.md`．
+  Mathlib に SVD 無しを確認．ツール選定は `dev/tooling.md`．
 - 数値検算 `tools/phases/`: GSLW 式 (16) の符号誤りを発見（正: $W=i\,e^{-i\pi/4\sigma_z}Re^{-i\pi/4\sigma_z}$），
   反射規約の多項式再帰を確定（$Q$ は左下成分），pyqsp / qsppack の規約を記録．
 
@@ -199,4 +199,4 @@ subagent による並列開発（1 エージェント＝1 ファイル集合，�
 - QSP-2（規約変換 `Wrot = i • phaseZ (-π/4) * Rref * phaseZ (π/4)`）と
   QSP-3（`qspPoly` と評価定理 `seqR_eval`）の定義ファイル・定理ファイルを分けて追加．
 - POLY-3（`sqrtPart`，偶多項式 `= R.comp (X^2)`）．
-- lean-quantum 依存可否の調査（`00note/survey.md`）．
+- lean-quantum 依存可否の調査（`dev/survey.md`）．

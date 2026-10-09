@@ -12,7 +12,7 @@ import QSVT.Polynomial.Parity
 
 The polynomials attached to a reflection-convention QSP phase sequence
 `Φ = [φ₁, …, φ_d]` (GSLW Cor 8, R-convention recursion verified in
-`00note/qsp-convention-check.md`):
+`dev/qsp-convention-check.md`):
 
 * `qspPoly Φ = (P, Q)`: the two-polynomial recursion; `P` is the top-left entry of
   `seqR Φ x` and `Q` the *bottom-left* entry divided by `√(1-x²)`.

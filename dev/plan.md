@@ -104,7 +104,7 @@
 - 目的: ビルドが通る骨組みと，依存ライブラリの採否決定．
 - 成果物:
   - `lakefile.toml`（Mathlib 最新安定版），`QSVT.lean` ルート，CI（`lake build` + `#print axioms` チェック），blueprint 雛形（lean-quantum と同じ LeanArchitect 方式）．
-  - `00note/survey.md`: lean-quantum（依存可否・必要モジュール），inQWIRE/LeanQuantum（Kronecker・制御ゲートの流用可否），LeanCert / girving/interval（Lean 版，`cos`/`sin` の区間評価，kernel 検証可否），Mathlib の `Polynomial.Chebyshev`・`Matrix.unitaryGroup`・`LinearMap.IsSymmetric.eigenvectorBasis`・`cfc` の API 確認．
+  - `dev/survey.md`: lean-quantum（依存可否・必要モジュール），inQWIRE/LeanQuantum（Kronecker・制御ゲートの流用可否），LeanCert / girving/interval（Lean 版，`cos`/`sin` の区間評価，kernel 検証可否），Mathlib の `Polynomial.Chebyshev`・`Matrix.unitaryGroup`・`LinearMap.IsSymmetric.eigenvectorBasis`・`cfc` の API 確認．
 - 主要タスク:
   - [x] lean-quantum の公開版（v4.29.0-rc6）を最新 Mathlib に上げて `require` できるか試す．→ 不可（survey.md §B）．`QSVT/Operator/Basic.lean` に最小複製する（Phase 2a 着手時）．
   - [x] GSLW の定理番号を [formal-spec.md](formal-spec.md) に固定，他の規約（pyqsp, qsppack の $W$ 規約）との変換表を作成（[qsp-convention-check.md](qsp-convention-check.md)；GSLW 式 (16) の符号誤りも発見）．
@@ -287,7 +287,7 @@ lean-qsvt/
 │   └── export/        -- QASM 出力・Qiskit 照合テスト
 ├── blueprint/         -- LeanArchitect
 ├── test/              -- #eval 回帰テスト，小 d の数値照合
-└── 00note/            -- 本計画，仕様，調査メモ
+└── dev/               -- 本計画，仕様，調査メモ
 ```
 
 ---

@@ -16,7 +16,7 @@ indices this is the matrix
 `gateMat i G b c = if (∀ j ≠ i, b j = c j) then G (b i) (c i) else 0`,
 
 which avoids Kronecker products and the `Fin (2 ^ n)` casts of the `kron` approach
-(`00note/survey.md` §D). The construction is a `*`-homomorphism in `G` (`applyAt_mul`,
+(`dev/survey.md` §D). The construction is a `*`-homomorphism in `G` (`applyAt_mul`,
 `applyAt_one`, `applyAt_adjoint`), so unitary gates give unitary operators
 (`applyAt_mem_unitary`), and it acts on the computational basis by
 `applyAt i G |c⟩ = ∑ₓ G x (c i) |c[i ↦ x]⟩` (`applyAt_ket`).

@@ -6,8 +6,8 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
 （Gilyén–Su–Low–Wiebe 2019）を経て，位相角パイプラインと回路コンパイラまでを目標とします．
 
 - **言語仕様と使い方: [doc/language.md](doc/language.md)**
-- 計画: [00note/plan.md](00note/plan.md)
-- 形式化仕様（定義・定理の ID 一覧）: [00note/formal-spec.md](00note/formal-spec.md)
+- 計画: [dev/plan.md](dev/plan.md)
+- 形式化仕様（定義・定理の ID 一覧）: [dev/formal-spec.md](dev/formal-spec.md)
 - 進捗ログ: [PROGRESS.md](PROGRESS.md)
 
 ## ディレクトリ
@@ -29,7 +29,7 @@ QSP（1 qubit の量子信号処理）の構造定理から始め，ブロック
   - `QSVT/Lang/` — 表面構文（`qsvt[Φ] U₀`，`poly[l] U₀`）と `#qsvt_info` コマンド
 - `QSVTHeavy/` — ビルドに数分かかる証明書（$\delta=0.1$ の符号関数近似など）．既定ターゲット外
 - `test/` — 回帰テスト（`lake test`）
-- `00note/` — 計画・仕様・調査メモ
+- `dev/` — 計画・仕様・調査メモ（開発ノート）
 - `tools/` — CLI `tools/qsvt`（`info`/`qasm`/`check`/`emit-cert`，[tools/README.md](tools/README.md)）と位相角ソルバー（untrusted）
 
 ## ビルド

@@ -15,7 +15,7 @@ reflection convention `seqR Φ x = ∏_j e^{iφ_j σ_z} R(x)` (GSLW Cor 8) are r
   `W(x) = i e^{-iπσ_z/4} R(x) e^{-iπσ_z/4}`                         (`Wrot_eq_Rref`)
 
 (GSLW's printed eq. (16) has `+π/4` on the right; both exponents are `-π/4`, see
-`00note/qsp-convention-check.md`). Merging adjacent phase gates gives the full-matrix identity,
+`dev/qsp-convention-check.md`). Merging adjacent phase gates gives the full-matrix identity,
 for `Φ' = (φ'_0, …, φ'_d)` with `d ≥ 1`, `θ := φ'_d - π/4` and
 `Φ̃ := (φ'_0 - π/4, φ'_1 - π/2, …, φ'_{d-1} - π/2)` (`shift φ₀ Φ'`):
 

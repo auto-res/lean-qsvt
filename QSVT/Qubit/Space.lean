@@ -20,7 +20,7 @@ layer works with qubit-indexed matrices. The `n`-qubit Hilbert space is
 the `L²` space of functions on bit strings of length `n`. Indexing by bit strings (rather than
 by `Fin (2 ^ n)`) makes "the operator acting on qubit `i`" and "the register split into its
 leading bit and its tail" (`Fin.cons`/`Fin.tail`) definable without `Nat.mul_assoc`-type casts
-(see `00note/survey.md` §D).
+(see `dev/survey.md` §D).
 
 Operators `L (Qubits n)` and matrices `Matrix (Fin n → Bool) (Fin n → Bool) ℂ` are identified by
 Mathlib's `Matrix.toEuclideanLin` (`toOp`, inverse `toMat`); this identification is a ring

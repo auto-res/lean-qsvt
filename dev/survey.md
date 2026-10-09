@@ -1,6 +1,6 @@
 # Phase 0 サーベイ: 依存ライブラリと Mathlib API（Lean v4.34.1 / Mathlib v4.34.1）
 
-- 作成日: 2026-10-08．対象: [plan.md](plan.md) Phase 0 の成果物 `00note/survey.md`（D1・D5 の採否判断の根拠）．
+- 作成日: 2026-10-08．対象: [plan.md](plan.md) Phase 0 の成果物 `dev/survey.md`（D1・D5 の採否判断の根拠）．
 - 検証環境: macOS (Darwin 25.2), elan 4.2.4, Lean `v4.34.1`，Mathlib tag `v4.34.1`（commit `d13f23b7`, 2026-09-24）．
 - スクラッチ: `/private/tmp/claude-501/-Users-shosonoda-work-quantum-lean-qsvt/32fd056f-3e39-40c7-9f82-2a840d613258/scratchpad/`
   （`lcproj/` = LeanCert 検証プロジェクト（`LcTest/*.lean` がテスト），`lq/lean-quantum/` = lean-quantum の v4.34.1 化クローン（`build.log`），`src/` = 各リポジトリの読み取り用クローン）．
