@@ -157,7 +157,15 @@ scale (ℓ¹)   : 1 ≈ 1.000000
 well scaled  : true
 ```
 
-正しさ: `baseQ_eq E₀ (by decide : wellScaledQ (poly[[0, -3, 0, 4]] U₀) = true)` が「基底ブロック $=(4A_0^3-3A_0)\Pi_0$」を与えます（`spec` は `simp`/`norm_num` で具体形に落ちます．`test/QSVTTest/Lang.lean` 参照）．
+正しさ: 次の `example` が「基底ブロック $=\|c\|_1^{-1}\,(4A_0^3-3A_0)\,\Pi_0$（ここでは $\|c\|_1=1$）」を与えます（`wellScaledQ` は有理数計算なので `decide +kernel` で閉じます．`test/QSVTTest/Lang.lean` と同じ形）．
+
+```lean
+example (E₀ : HermitianEncoding ℋ) :
+    compress (toExpr (poly[[0, -3, 0, 4]] U₀)) (denoteQ E₀ (poly[[0, -3, 0, 4]] U₀)).encoded =
+      ((scaleQ (poly[[0, -3, 0, 4]] U₀) : ℝ) : ℂ)⁻¹ •
+        (aeval E₀.encoded (spec (toExpr (poly[[0, -3, 0, 4]] U₀))) * E₀.P) :=
+  baseQ_eq E₀ (by decide +kernel)
+```
 
 ### 7.2 証明済みの位相列で符号関数を施す（Route B）
 
