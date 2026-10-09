@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (lake build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Lean project with Mathlib cache
+        # leanprover/lean-action@v1 pinned to a specific sha for reproducibility.
+        # Mathlib comes from the cache; LeanCert (dependency of QSVT.Certificate.*) has no
+        # cached oleans and is compiled from source here, which adds about five minutes.
+        uses: leanprover/lean-action@434f25c2f80ded67bba02502ad3a86f25db50709
+        with:
+          use-mathlib-cache: true
+          build: true
+          test: true
+          lint: false
+
+  no-sorry:
+    name: No sorry in QSVT/
+    runs-on: ubuntu-latest
+    # The library is sorry-free (since 2026-10-09); any `sorry` under QSVT/ fails CI.
+    continue-on-error: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fail if any `sorry` appears under QSVT/
+        run: |
+          if grep -rn --include='*.lean' -w "sorry" QSVT QSVT.lean; then
+            echo "::error::Found 'sorry' in the QSVT library (listed above)."
+            exit 1
+          fi
+          echo "No 'sorry' found in QSVT/."
+
+  # Heavy kernel certificates (QSVTHeavy): minutes to build, so only on demand or when they change.
+  heavy:
+    name: Heavy certificates (QSVTHeavy)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[heavy]')
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: leanprover/lean-action@434f25c2f80ded67bba02502ad3a86f25db50709 # 2025-07-02
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Build QSVTHeavy
+        run: lake build QSVTHeavy

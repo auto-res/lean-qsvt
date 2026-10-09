@@ -1,0 +1,31 @@
+name = "lean-qsvt"
+defaultTargets = ["QSVT"]
+testDriver = "QSVTTest"
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header.license = "Released under MIT license as described in the file LICENSE."
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.1"
+
+[[require]]
+name = "leancert"
+git = "https://github.com/alerad/leancert"
+rev = "v4.34.1"
+
+[[lean_lib]]
+name = "QSVT"
+
+[[lean_lib]]
+name = "QSVTTest"
+srcDir = "test"
+
+# Heavy kernel certificates (several minutes each); built only on demand: `lake build QSVTHeavy`.
+[[lean_lib]]
+name = "QSVTHeavy"

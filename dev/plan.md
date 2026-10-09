@@ -84,13 +84,14 @@
 
 | ID | 判断 | 理由 / 代替案 |
 |---|---|---|
-| D1 | **コア定理は基底非依存（`L ℋ`，`Qudit ℋ`）**，回路層は qubit 添字付き行列 `Matrix (Fin n → Bool) (Fin n → Bool) ℂ`．両者を `toOperator` で橋渡し | lean-quantum と整合し，CFC・スペクトル定理をそのまま使える．回路層は Kronecker 積と制御ゲートが具体的に書ける方が楽．依存の仕方（lean-quantum を `require` するか最小部分を複製するか）は Phase 0 でツールチェーン整合を見て決める |
+| D1 | **コア定理は基底非依存（`L ℋ`，`Qudit ℋ`）**，回路層は qubit 添字付き行列 `Matrix (Fin n → Bool) (Fin n → Bool) ℂ`．両者を `toOperator` で橋渡し | lean-quantum と整合し，CFC・スペクトル定理をそのまま使える．回路層は Kronecker 積と制御ゲートが具体的に書ける方が楽．**Phase 0 の結論**: lean-quantum 公開版を v4.34.1 に上げると `QuantumChannel` が 31 エラーでビルド不能（[survey.md](survey.md) §B）→ `QuantumState.lean` の約 70 行（`Qudit`, `L`, `†`, `Tr`, `IsProjective` 等）を Apache-2.0 表示付きで `QSVT/Operator/Basic.lean` に複製し，名前は同一に保つ |
 | D2 | **QSP の規約は GSLW の反射規約 $R(x)$（Cor 8，位相 $d$ 個）**を主，回転規約 $W(x)$（Thm 3，位相 $d+1$ 個）は変換補題で接続 | QSVT 定理（Def 15, Thm 17）が $R$ 規約で書かれている．QSPPACK 等は $W$ 規約なので変換補題が必要 |
 | D3 | **$P^{(SV)}(A)$ は SVD を使わず定義**: $P$ 偶 $=R(x^2)$ なら $\Pi\,R(A^\dagger A)\,\Pi$，$P$ 奇 $=xR(x^2)$ なら $A\,R(A^\dagger A)$ | Mathlib に SVD が無い．代数的定義なら `Polynomial.aeval` で書け，計算可能性・拡張性が高い．SVD との一致は補題として証明 |
 | D4 | **Hermitian 符号化（$\tilde\Pi=\Pi$, $A=A^\dagger$）の QET を先行**，一般 QSVT は後続 | スペクトル定理（Mathlib）だけで閉じ，Hamiltonian simulation・逆行列・基底状態など主要応用を先にカバー |
 | D5 | **位相角は untrusted，Lean は証明書を検査**．並行して **数値を使わない Route A（Chebyshev-LCU）** を持つ | 証明付き数値計算（LeanCert / girving/interval）の成熟度・バージョン整合に依存しない退路を確保．Route A はクエリ数が $O(d^2)$ で劣るが完全に exact |
 | D6 | **誤差 ε と正規化 α は型に載せる**: `BlockEncoding (α ε : ℝ) (a : ℕ) (A : L ℋ)` | GSLW Def 43 そのもの．合成則（LCU，積，QSVT）が誤差伝播の定理になる |
 | D7 | **コア IR は純ユニタリ**．量子データ上の分岐は制御ユニタリ（$C_\Pi\mathrm{NOT}$，多重制御位相）に，古典ループはメタ言語（Lean）の再帰に，観測は最上位の `run`／channel に限定 | 「観測で状態が壊れる」問題への構造的回答．補助量子ビットが $\ket{0}$ に戻ることは ブロック符号化述語そのものが保証する |
+| D8 | **補助量子ビットは直和で表す**: `Anc ℋ := WithLp 2 (ℋ × ℋ)`，作用素は `L ℋ` 成分の 2×2 ブロック．$m$ 項 LCU は `PiLp 2 (fun _ : Fin m => ℋ)` に拡張 | テンソル積 `ℂ² ⊗ ℋ` の基底非依存な取り回し（lean-quantum の `basisPiTensor*`）を持ち込まずに Cor 18・Lemma 19 が書ける．qubit テンソル積との対応は回路層（Phase 5）で付ける |
 
 ---
 
@@ -103,11 +104,11 @@
 - 目的: ビルドが通る骨組みと，依存ライブラリの採否決定．
 - 成果物:
   - `lakefile.toml`（Mathlib 最新安定版），`QSVT.lean` ルート，CI（`lake build` + `#print axioms` チェック），blueprint 雛形（lean-quantum と同じ LeanArchitect 方式）．
-  - `00note/survey.md`: lean-quantum（依存可否・必要モジュール），inQWIRE/LeanQuantum（Kronecker・制御ゲートの流用可否），LeanCert / girving/interval（Lean 版，`cos`/`sin` の区間評価，kernel 検証可否），Mathlib の `Polynomial.Chebyshev`・`Matrix.unitaryGroup`・`LinearMap.IsSymmetric.eigenvectorBasis`・`cfc` の API 確認．
+  - `dev/survey.md`: lean-quantum（依存可否・必要モジュール），inQWIRE/LeanQuantum（Kronecker・制御ゲートの流用可否），LeanCert / girving/interval（Lean 版，`cos`/`sin` の区間評価，kernel 検証可否），Mathlib の `Polynomial.Chebyshev`・`Matrix.unitaryGroup`・`LinearMap.IsSymmetric.eigenvectorBasis`・`cfc` の API 確認．
 - 主要タスク:
-  - [ ] lean-quantum の公開版（v4.29.0-rc6）を最新 Mathlib に上げて `require` できるか試す．無理なら `QSVT/Operator/Basic.lean` に `Qudit`, `L`, `†`, `IsProjective` 相当を最小複製（後で差し替え可能な形）．
-  - [ ] GSLW の定理番号を [formal-spec.md](formal-spec.md) に固定（済），他の規約（Martyn–Rossi–Tan–Chuang 2021 の $W_x$ 規約，QSPPACK）との変換表を作る．
-  - [ ] ソルバー候補の動作確認（QSPPACK Python 版，pyqsp，Berntson–Sünderhauf の FFT 法）．出力を JSON（二進小数の位相列）にする薄いラッパ．
+  - [x] lean-quantum の公開版（v4.29.0-rc6）を最新 Mathlib に上げて `require` できるか試す．→ 不可（survey.md §B）．`QSVT/Operator/Basic.lean` に最小複製する（Phase 2a 着手時）．
+  - [x] GSLW の定理番号を [formal-spec.md](formal-spec.md) に固定，他の規約（pyqsp, qsppack の $W$ 規約）との変換表を作成（[qsp-convention-check.md](qsp-convention-check.md)；GSLW 式 (16) の符号誤りも発見）．
+  - [x] ソルバー候補の動作確認（pyqsp 0.2.0, qsppack 0.4.0 を導入．$T_5$ と次数 21 の符号関数近似で検証）．JSON 出力ラッパ `tools/phases/solver_examples.py`．
 - 完了条件: 空の定理ファイルを含むプロジェクトが CI で通る．D1・D5 の採否が決まる．
 - リスク: ツールチェーン不整合（lean-quantum, LeanCert がそれぞれ別の Lean 版）．→ 最小複製で逃げる．
 
@@ -117,8 +118,8 @@
 - 成果物: `QSVT/QSP/*.lean`
 - 主要タスク:
   - [ ] `POLY-*`: parity，偶奇分解 `evenPart/oddPart`，偶多項式 $=R(x^2)$ の表現，$[-1,1]$ 上 sup ノルム，Chebyshev $T_n$ の性質（Mathlib 流用）．
-  - [ ] `QSP-1`: $R(x)$, $e^{i\phi\sigma_z}$，列 `seqR Φ x` の再帰定義．$W(x)$ 規約も定義し変換補題 `QSP-2`（Cor 8 の証明中の $W = i e^{-i\pi/4\sigma_z} R e^{i\pi/4\sigma_z}$）．
-  - [ ] `QSP-3`: $(P_\Phi, Q_\Phi)$ を **多項式の再帰**で定義（GSLW 式 (4) の更新則）し，評価定理「$x\in[-1,1]$ で `seqR Φ x` の成分 $= P_\Phi(x),\ iQ_\Phi(x)\sqrt{1-x^2},\dots$」を帰納法で証明．次数・parity・$|P|^2+(1-x^2)|Q|^2=1$ を系として導出．
+  - [ ] `QSP-1`: $R(x)$, $e^{i\phi\sigma_z}$，列 `seqR Φ x` の再帰定義．$W(x)$ 規約も定義し変換補題 `QSP-2`（$W = i e^{-i\pi/4\sigma_z} R e^{-i\pi/4\sigma_z}$．GSLW 式 (16) の印刷は右側の符号が誤り．数値検証済）．
+  - [ ] `QSP-3`: $(P_\Phi, Q_\Phi)$ を **多項式の再帰**で定義（formal-spec.md の検証済再帰．$Q$ は左下成分）し，評価定理「$x\in[-1,1]$ で `seqR Φ x` の成分 $= P_\Phi(x),\ iQ_\Phi(x)\sqrt{1-x^2},\dots$」を帰納法で証明．次数・parity・$|P|^2+(1-x^2)|Q|^2=1$ を系として導出．
   - [ ] `QSP-4`: Chebyshev の閉形式位相（Lemma 9）: $\phi_1=(1-d)\pi/2,\ \phi_{i\ge2}=\pi/2$ で $P_\Phi=T_d$．最初の「exact な実例」．
   - [ ] `QSP-5`: 端点公式 $P_\Phi(\pm1)=(\pm1)^d\prod e^{i\phi_j}$，偶数 $d$ の $P_\Phi(0)$（Cor 8 の moreover）．QSVT 定理の端点ケースで必要．
   - [ ] `QSP-6`: 摂動補題 $\|P_\Phi - P_{\Phi'}\|_\infty \le 2\sum_j|\phi_j-\phi'_j|$（ユニタリ積の telescoping）．
@@ -222,6 +223,19 @@
 
 ## 5. スケジュール目安
 
+**達成状況（2026-10-09 時点）**: M1–M5 を達成，M6 は 4 例中 4 例（固定点振幅増幅・閾値射影・擬似逆・Hamiltonian simulation の多項式ステップ）とループ例が揃い，残りは振幅増幅との結合と近似次数の漸近定理．
+計画時の目安（約 1 年）に対し，subagent 並列開発により 2 日で到達した．詳細は [PROGRESS.md](../PROGRESS.md) と [formal-spec.md](formal-spec.md) の進捗表．
+
+| マイルストーン | 状態 | 実体 |
+|---|---|---|
+| M1 Chebyshev の exact 位相 | 済 | `QSP/Chebyshev.lean` |
+| M2 QET 定理 | 済 | `SVT/QET.lean`；一般 QSVT（Thm 17）も `SVT/QSVT.lean` で済 |
+| M3 $f\mapsto$ 回路 + 証明（Hermitian, exact） | 済 | Route A `Pipeline/ChebLCU.lean`，`routeA` |
+| M4 QSVT 定理 + 証明書検査 | 済 | `Certificate/PhaseCheck.lean`（`checkRe_sound`），Route B `Examples/Sign21RouteB.lean`（21 クエリ） |
+| M5 OpenQASM 出力 + compile_correct | 済 | `Circuit/`，`Qubit/Compile.lean`（`compileQ_qsvtReal`），`Qubit/Qasm.lean`，`Qubit/RegBridge.lean` |
+| M6 GSLW 4 例 + ループ例 | ほぼ済 | `Examples/{FixedPointAA,Threshold,Inverse,Evolution,Loop}.lean`；振幅増幅との結合（Thm 41/58 の残り）と Lemma 25/29/40 の漸近次数定理は未 |
+
+
 前提: 1–2 名 + AI 支援，週 20–30 時間．並行可能なものは並行．数字は目安であり，Phase 1–2a の実績で再見積もりする．
 
 | 期間（週） | 主担当フェーズ | 並行 | マイルストーン |
@@ -273,7 +287,7 @@ lean-qsvt/
 │   └── export/        -- QASM 出力・Qiskit 照合テスト
 ├── blueprint/         -- LeanArchitect
 ├── test/              -- #eval 回帰テスト，小 d の数値照合
-└── 00note/            -- 本計画，仕様，調査メモ
+└── dev/               -- 本計画，仕様，調査メモ
 ```
 
 ---

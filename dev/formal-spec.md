@@ -6,6 +6,47 @@
 - 難易度: ★（定義・簡単な補題）〜 ★★★★（数週間規模）．
 - Lean シグネチャは**方向性を示すスケッチ**であり，Phase 0 の API 確認後に確定する．
 
+## 進捗と命名の差異（2026-10-08 更新）
+
+| ID | 状態 | Lean での実体（spec からの差異） |
+|---|---|---|
+| POLY-1/2 | 済 | `QSVT/Polynomial/Parity.lean`．`HasParity P n := (Even n → IsEven P) ∧ (Odd n → IsOdd P)` もここ |
+| POLY-3 | 済 | `SqrtPart.lean`: `sqrtPart` ではなく `evenRoot P := contract 2 P`，`oddRoot P := contract 2 P.divX`．`IsEven.eq_evenRoot_comp`，`IsOdd.eq_X_mul_oddRoot_comp` |
+| POLY-4 | 済 | `SupNorm.lean`: `supNorm`，`norm_eval_le_supNorm`，`supNorm_le_of_forall`（$0\le M$ 不要），`supNorm_le_sum_norm_coeff` |
+| POLY-5/6 | 済 | `Chebyshev.lean`: ℕ 添字ラッパ `T_eval_cos`，`norm_eval_T_le_one`，`T_parity`，`natDegree_T`；`ChebSeries`（`toPoly`，`l1`，`supNorm_toPoly_le_l1`）．`ChebCoeff.lean`: 計算可能な `QC := ℚ × ℚ`，`PolyQC`，`ChebQC`，`ofMonomials`（Horner + `mulX`）と正当性 `toPoly_ofMonomials`，`l1Bound`．`#eval` 可 |
+| QSP-1 | 済 | `QSP/Conventions.lean` |
+| QSP-3 | 済 | `QSP/Poly.lean`（`qspPoly4`，`qspPoly`，`conjP`，`negX`），`QSP/Structure.lean`（`seqR_eval4`，`seqR_eval`，`natDegree_*_le`，`hasParity_*`，`norm_identity`，`qspPoly_neg`，`seqR_apply_zero_zero/one_zero`） |
+| QSP-4 | 済 | `QSP/Chebyshev.lean`: `chebPhases`，`seqR_chebPhases_eq`（全行列，$d\ge 0$），`seqR_chebPhases` |
+| QSP-5 | 済 | `QSP/Endpoints.lean`: `seqR_one`，`seqR_neg_one`，`alt`，`seqR_zero_of_even/odd` |
+| QSP-7 | 済 | `QSP/PolyW.lean`（`qspPolyW`，`seqW_eval`），`QSP/Existence.lean`（**`exists_phases`**: Thm 3 ⇐），`QSP/Complementary.lean`（**Lemma 6 `exists_sumsq_decomposition`**: 非負偶多項式 $A=B^2+(1-x^2)C^2$，平方和表現 `SOSRep` の積閉性と根の 3 分類による帰納法；**Thm 5 `exists_complement`**，**Cor 10 `exists_phases_real`/`exists_phases_R_real`**: $[-1,1]$ で $|\tilde P|\le1$ の parity 付き実多項式は反射規約の位相列で $\Re$ として実現可能）．Thm 4 の必要性方向は未 |
+| ENC-1 | 済 | `Encoding/Projected.lean`: 射影のフィールド名は `P`（$\Pi$），`P'`（$\tilde\Pi$）．`Π` は Lean の識別子に使えない．`HermitianEncoding`（`P'_eq`，`encoded_selfAdjoint`） |
+| ENC-2/3 | 済 | **設計変更 D8**: 補助 1 qubit は `Anc ℋ := WithLp 2 (ℋ × ℋ)`，2×2 ブロック作用素 `block`，`blockDiag`，`topLeft`，`anc0`，`hadA`，`lcu2`（`Ancilla.lean`，`LCU.lean`）．$m$ レジスタは `Reg m ℋ := PiLp 2 (fun _ : Fin m => ℋ)`，`matOp`，`selectOp`，`regTopLeft`，`reg0`，`lcu V W`，Householder 状態準備 `householder`，`lcu_complex`（`Register.lean`，`LCUm.lean`）．テンソル積は回路層まで使わない |
+| SVT-1/2 | 済 | `SVT/AltSeq.lean`（`altSeq`，`altSeq_mem_unitary`，`altSeq_one/two/three`），`SVT/PhaseOp.lean` |
+| SVT-3 | 済 | `SVT/EigenBasis.lean`（`eigenVec`，`eigenValue`，`aeval_eigenVec`，`ext_of_eigenVec`），`SVT/TwoVector.lean`（(R0)–(R5)，`altSeq_apply_eigen`，`proj_altSeq_apply_eigen(_eval)`），`SVT/QET.lean`: **`qet : P * altSeq Φ * P = aeval A (qspPoly Φ).1 * P`**，`qspPoly_chebPhases`，`qet_chebyshev` |
+| SVT-6/7 | 済 | `SVT/SVD.lean`（$A^\dagger A$ の固有基底から特異ベクトル対 `rv`/`lv`，`σ`，`svTransform_apply_rv_of_isEven/isOdd`），`SVT/TwoFrame.lean`（2 フレームの関係式と `altSeq_apply_rv`，σ に条件なし），`SVT/QSVT.lean`: **`qsvt_odd`/`qsvt_even`**（GSLW Thm 17，一般の射影ユニタリ符号化），`qet_of_qsvt` |
+| SVT-4/5 | 済 | `SVT/NormBound.lean`（`norm_aeval_apply_le`，`opNorm_aeval_mul_P_le`），`SVT/SVTransform.lean`（`svTransform`，`svTransform_of_isEven/isOdd`，`svTransform_eq_aeval`） |
+| SVT-8 | 済 | `SVT/RealPoly.lean`: `rePoly`，`aeval_adjoint`，`P_mul_aeval`，**`qet_real`**（Cor 18），合成子 `HermitianEncoding.qsvtReal E Φ : HermitianEncoding (Anc ℋ)` と `qsvtReal_encoded` |
+| CERT-A | 済 | `Pipeline/ChebLCU.lean`: `chebLCU E c`，`regTopLeft_regP_chebLCU_regP`，**`routeA`**（計算可能入力 `PolyQC` から $f(A)P/\|c\|_1$ の符号化，exact），`chebHermitianEncoding`，`routeA_queries` |
+| CERT-B | 済 | `Certificate/Bound.lean`（LeanCert の kernel 検証と `supNorm` の接続），`Sign21.lean`（次数 21 の符号関数近似: $\|p\|\le1$，$[0.15,1]$ で $\pm c$ に 0.0236 以内），`CosExample.lean`（$\cos 2x$ の次数 10 近似，Taylor 多項式経由で $10^{-6}$），`ChebC.lean`/`PhaseCheck.lean`（位相列からの Chebyshev 係数の区間再帰 `check`/`checkRe` と **`checkRe_sound`**），`Sign21Phases.lean`（次数 21 の位相証明書を kernel で 45 s，`target_sign21_eq`） |
+| APP-1 | 済 | `Examples/Sign21.lean`（Route A: 231 クエリ），`Examples/Sign21RouteB.lean`（**Route B: 21 クエリ，補助 1 qubit**），`SVT/SingularPair.lean`（任意の特異ベクトル対 `IsSingularPair`），`SVT/RealPolyGeneral.lean`（一般符号化の Cor 18 `qsvt_real_odd`），`Examples/FixedPointAA.lean`（**GSLW Thm 27**: rank-1 射影 $|\psi_0\rangle\langle\psi_0|$ と良い部分空間の射影で符号化し，初期重なり $a\ge0.15$ から成功振幅 $\ge0.869$，21 クエリ） |
+| APP-3 (AA 結合, heavy) | 済 | `QSVTHeavy/FixedPointAAD01.lean`（$\delta=0.1$ 版の固定点 AA: 35 クエリ，成功振幅 $\ge0.975$），`QSVTHeavy/InverseAA.lean`（**`inverseAA_amplitude`**, **`inverseAA_output`**: スペクトルが $|\lambda|\ge1/4$ に乗る $b$ について，正規化した $A^{-1}b$（`idealInvState`，`encoded_idealInv : A (idealInv) = (c/4) b`）の $c$ 倍に $0.02$ 以内，成功振幅 $\ge0.975$，15,225 クエリ．GSLW Thm 41 相当） |
+| APP-3 | 済 | `Certificate/InvExample.lean`（$\kappa=4$，次数 29，$|4x\,p(x)-3/4|\le 7.5\times10^{-4}$ on $[1/4,1]$，kernel 115 s），`Examples/Inverse.lean`（固有値 $|\lambda|\ge1/4$ で $c/(4\lambda\|c\|_1)$ 倍に $\varepsilon/\|c\|_1$ 以内，435 クエリ）．注: $|p|\le1$ の制約下で $1/(\kappa x)$ そのもの（$c=1$）は $x=1/\kappa$ の折れ点のため次数 $\Omega(1/\varepsilon)$ が必要で，$c=3/4$ を採用 |
+| APP-2 | 済 | `Certificate/RectExample.lean`（次数 32 の偶多項式，$|x|\le0.4$ で $[0.99,1]$，$|x|\ge0.6$ で $|r|\le0.01$，LP で証明書の余裕 $2.4\times10^{-3}$ を最大化），`Examples/Threshold.lean`（固有値の窓フィルタ，528 クエリ） |
+| APP-5 | 済 | `Lang/Loop.lean`（`iterate`，`qsvtIter` のコスト $|\Phi|^k$ と `spec = compIter`，`totalQueries`，`expectedQueries`），`Examples/Loop.lean`（反復 sign，二分探索スケルトン `bisect`/`visited`，窓プログラム `windowProg t`） |
+| ENC-4 | 済 | `Encoding/Swap.lean`（`swapReg : Reg a (Reg b ℋ) ≃ₗᵢ Reg b (Reg a ℋ)`，`outerLift`/`innerLift`），`Encoding/Product.lean`（`prodU`，`prodEncoding`，**`topLeft₂_prodU`**: Lemma 53）．IR への `prod` 統合は未（`Expr` の変更が `Lang` を壊すため，入れ子の補助空間の一般化が必要） |
+| CIRC-1/5 ($m=2^k$) | 済 | `Qubit/RegBridge.lean`（`regEquiv : Reg (2^k) (Qubits n) ≃ₗᵢ Qubits (n+k)`，`liftReg_selectOp`（多重化 select），`liftReg_matOp`（$k$ qubit ゲート），`liftReg_lcu`，`liftReg_chebLCU`） |
+| CLI | 済 | `tools/qsvt`（`lake env lean --run tools/qsvt_cli.lean`）: `info`，`qasm`，`check`（`checkRe` の untrusted プレビュー），`emit-cert`（`decide +kernel` の Lean モジュール生成）．起動 8 s，sign21 の `checkRe` は IO 評価 0.4 s / kernel 47 s |
+| LANG-1 | 済 | `Lang/ExprQ.lean`（有理データの `ExprQ`，`toExpr`，計算可能なコスト `queriesQ`/`ancillaDimQ`/`scaleQ`/`wellScaledQ` と IR との一致定理，**`baseQ_eq`**），`Lang/Notation.lean`（`U₀`，`qsvt[Φ] e`，`cheb[c] e`，`poly[l] e`），`Lang/Info.lean`（`#qsvt_info` コマンド: クエリ数・補助次元・次数・スケール・ゲート数・OpenQASM） |
+| APP-4 (AA 結合) | 済 | `Examples/Compose.lean`（正規化補題，スペクトル関数計算 `funCalc` と Parseval，`norm_aeval_apply_ge`，Route A 回路から AA 用データ `regGood`/`regAmp`，`regAA_amplitude`），`Examples/EvolutionAA.lean`（**`evolutionAA_amplitude`**: $e^{-2iA}b$ の準備を固定点振幅増幅で成功振幅 $\ge0.869$，出力誤差 $\le0.0237$，1386 クエリ．GSLW Thm 58 相当，定数 $c\approx0.892$） |
+| CERT-B ($\delta=0.1$) | 済（heavy） | `QSVTHeavy/SignD01.lean`，`SignD01Phases.lean`: 次数 35，$c=79/80$，plateau $\pm0.012$ on $[0.1,1]$，位相証明書 $\varepsilon=10^{-12}$（kernel 265 s）．ビルドに約 9 分かかるため既定ターゲット外 |
+| APP-4 | 済 | `Examples/CosEvolution.lean`（$\cos 2A$，55 クエリ），`Certificate/SinExample.lean`，`Examples/Evolution.lean`（複素係数 Route A で $e^{-2iA}/\|c\|_1$，全固有ベクトルで $2\times10^{-6}/\|c\|_1$ 以内，66 クエリ）．振幅増幅による正規化（Thm 58 の残り）は未 |
+| CIRC-4/5/6 | 済 | `Qubit/Space.lean`，`Gates.lean`，`Bridge.lean`（`Anc (Qubits n) ≃ₗᵢ Qubits (n+1)`，`liftAnc`，`liftAnc_cpiNot_diagProj = ctrlX`），`Qubit/Compile.lean`（`compileQ`，**`compileQ_qsvtReal`**: qubit ゲート列の意味 = `liftAnc` した Route B ユニタリ），`Qubit/Qasm.lean`（OpenQASM 3 出力，untrusted） |
+| IR-1/2 | 済 | `IR/Expr.lean`（`Expr = oracle \| qsvtReal Φ e \| chebLCU c₀ c e`，`spec`，`scale`，`WellScaled`），`IR/Denote.lean`（`space`，`denote`，`chebEnc0`: 次段の射影は `atZero Π = \|0⟩⟨0\| ⊗ Π`），`IR/Sound.lean`（**`compress_aeval_mul_P`**，`base_eq_smul`），`IR/Cost.lean`（`queries`，`ancillaDim`，`natDegree_spec_le`） |
+| CIRC-1/3 | 済 | `Circuit/Gadget.lean`（`cpiNot`，`gadget_eq`: Fig. 1b，`gadgetSeq_eq`，`qsvtReal_U_eq_gadget`），`Circuit/Primitive.lean`（`Prim`，`Circuit.denote`，`compileQsvtReal`，`denote_compileQsvtReal`，資源数 `oracleCount = n`，`cpiNotCount = 2n`，`phaseCount = n`） |
+| QSP-2/6 | 済 | `QSP/Conversion.lean`（`Wrot_eq_Rref`，`seqW_eq_seqR`，`seqW_apply_zero_zero_eq`: Cor 8 の対応を一般の $d$ で），`QSP/Perturb.lean`（`norm_seqR_sub_seqR_le`: 定数 1，作用素ノルムは `Matrix.Norms.L2Operator`） |
+| 作用素層 | 済 | `Operator/Basic.lean`: lean-quantum の `QuantumState` 名前空間を同名で複製（Apache-2.0 表示） |
+
+
 ---
 
 ## 0. 記法と規約
@@ -50,26 +91,30 @@ def seqW (φ₀ : ℝ) (Φ : List ℝ) (x : ℝ) : M₂
 補題: `Rref x ∈ unitaryGroup` for $x\in[-1,1]$（$\sqrt{1-x^2}$ は `Real.sqrt`），`Rref x * Rref x = 1`，`phaseZ φ` ユニタリ．
 
 ### QSP-2 規約変換（★★）
-GSLW Cor 8 の証明（式 (16)）: $W(x) = i\,e^{-i\frac\pi4\sigma_z}R(x)e^{i\frac\pi4\sigma_z}$．系として
-$$\mathrm{seqW}(\phi'_0,\dots,\phi'_d; x) = \mathrm{seqR}(\Phi; x)\ \text{ with }\ \phi_1 = \phi'_0+\phi'_d+(d-1)\tfrac\pi2,\ \phi_j = \phi'_{j-1}-\tfrac\pi2\ (j\ge2)$$
-（左上成分が一致；全体は位相 $i^d$ と右側の $e^{i(\phi'_d-\pi/4)\sigma_z}$ の分だけ異なる）．ソルバー（$W_x$ 規約）出力を主規約に写すのに使う．Martyn et al. の $W_x$ 規約との表も作る．
+**検証済（2026-10-08，`tools/phases/qsp_conventions.py`，$d\le 8$）**: GSLW 式 (16) は印刷では右側が $e^{+i\frac\pi4\sigma_z}$ だが，正しくは両側とも $-\pi/4$:
+$$W(x) = i\,e^{-i\frac\pi4\sigma_z}\,R(x)\,e^{-i\frac\pi4\sigma_z}.$$
+位相の対応は Cor 8 の主張どおり $\phi_1 = \phi'_0+\phi'_d+(d-1)\tfrac\pi2,\ \phi_j = \phi'_{j-1}-\tfrac\pi2\ (j\ge2)$ で左上成分が一致．行列全体の厳密な関係は（$\theta := \phi'_d-\pi/4$，$\tilde\Phi := (\phi'_0-\pi/4,\ \phi'_1-\pi/2,\dots,\phi'_{d-1}-\pi/2)$）
+$$\mathrm{seqW}(\Phi';x) = i^d\,\mathrm{seqR}(\tilde\Phi;x)\,e^{i\theta\sigma_z} = \sigma_z^d\,e^{-i\theta\sigma_z}\,\mathrm{seqR}(\Phi;x)\,e^{i\theta\sigma_z}.$$
+ソルバー（pyqsp，qsppack はいずれも seqW 規約）の出力を主規約に写すのに使う．各ソルバーの規約差（対称位相，$\pm\pi/4$ オフセット，$\Re P$ か $\Im P$ か）は [qsp-convention-check.md](qsp-convention-check.md) の表を参照．
 
 ### QSP-3 構造定理（評価定理）（★★★）
-多項式の再帰（$R$ 規約版．GSLW Thm 3 の式 (4) を $R$ に合わせて書き直す）:
+**検証済（数値・記号，$d\le 8$）**の $R$ 規約の再帰．$Q$ は**左下**成分の多項式:
 ```lean
-/-- (P_Φ, Q_Φ) : seqR Φ x = [[P(x), Q(x)√(1-x²)], [Q^♯(x)√(1-x²), P^♯(x)]] となる多項式 -/
+/-- QSP-3. seqR Φ x = [[P(x), Q*(−x)·s], [Q(x)·s, P*(−x)]],  s = √(1-x²),  d = Φ.length -/
 def qspPoly : List ℝ → ℂ[X] × ℂ[X]
 | []       => (1, 0)
 | (φ :: Φ) => let (P, Q) := qspPoly Φ
-              ( C (exp (I φ)) * (X * P + (1 - X^2) * Q),      -- 要確認: 符号・共役の並びは Rref の定義から導出
-                C (exp (-I φ)) * (P - X * Q) )
+              ( C (exp (I * φ)) * (X * P + (1 - X ^ 2) * Q),
+                C (exp (-(I * φ))) * (P - X * Q) )
 ```
-**定理 `seqR_eval`**: $\forall x\in[-1,1]$，`seqR Φ x = ![![P.eval x, Q.eval x * √(1-x²)], ![…, …]]`（具体形は再帰定義から機械的に）．
-**系**: (i) $\deg P\le d$, $\deg Q\le d-1$；(ii) parity $P\equiv d$, $Q\equiv d-1 \pmod 2$；(iii) $|P(x)|^2+(1-x^2)|Q(x)|^2=1$（ユニタリ性から）．
-注: 右下成分が $P^*$ になるのは $W$ 規約（Thm 3）の形．$R$ 規約では $\det R=-1$ のため成分の対応がずれるので，**まず再帰定義を書き `seqR_eval` を $d=1,2$ で `norm_num` 検算してから一般化する**．$x=\cos\theta$ に置換した版 `seqR_eval_cos` も用意（$\sqrt{1-x^2}=\sin\theta$ で根号を消す）．
+ここで $P^*$ は係数の複素共役（`P.map (starRingEnd ℂ)`），$Q^*(-x)$ はそれを $-X$ で合成したもの．右列は左列から決まる（帰納法で閉じる）ので再帰は 2 項で十分．
+**定理 `seqR_eval`**: $\forall x\in[-1,1]$，$s=$ `Real.sqrt (1 - x^2)` として
+`seqR Φ x = !![P.eval x, (Q.map conj).eval (-x) * s; Q.eval x * s, (P.map conj).eval (-x)]`．
+**系**: (i) $\deg P\le d$, $\deg Q\le d-1$；(ii) parity $P\equiv d$, $Q\equiv d-1 \pmod 2$；(iii) $|P(x)|^2+(1-x^2)|Q(x)|^2=1$（ユニタリ性から）；(iv) `qspPoly (Φ.map Neg.neg) = (P.map conj, Q.map conj)`（Cor 18 で使用）．
+等価な 4 項版（$P,Q_t,Q_b,P_b$，基底 $(1,0,0,1)$）: $P'=e^{i\phi}(xP+(1-x^2)Q_b)$，$Q_t'=e^{i\phi}(xQ_t+P_b)$，$Q_b'=e^{-i\phi}(P-xQ_b)$，$P_b'=e^{-i\phi}((1-x^2)Q_t-xP_b)$，帰納法で $Q_t=Q_b^*(-x)$，$P_b=P^*(-x)$ が閉じる．帰納法の仮定を強くしたいときはこちらを使う．$x=\cos\theta$ 版 `seqR_eval_cos`（$s=\sin\theta$）も用意．
 
 ### QSP-4 Chebyshev の閉形式位相（GSLW Lemma 9）（★★）
-$\Phi = ((1-d)\pi/2, \pi/2, \dots, \pi/2)$ に対し $P_\Phi = T_d$．証明: $e^{i\frac\pi2\sigma_z}R(x) = i\sigma_z R(x)$ は角 $\arccos x$ の回転なので $d$ 個の積は角 $d\arccos x$ の回転．`POLY-5` の $T_d(\cos\theta)=\cos d\theta$ で閉じる．Route A（exact パイプライン）の基盤．
+$\Phi = ((1-d)\pi/2, \pi/2, \dots, \pi/2)$ に対し $P_\Phi = T_d$（数値検証済；行列全体は $[[T_d,\ U_{d-1}s],[(-1)^{d+1}U_{d-1}s,\ (-1)^dT_d]]$，$U_{d-1}$ は第 2 種 Chebyshev）．証明: $e^{i\frac\pi2\sigma_z}R(x) = i\sigma_z R(x)$ は角 $\arccos x$ の回転なので $d$ 個の積は角 $d\arccos x$ の回転．`POLY-5` の $T_d(\cos\theta)=\cos d\theta$ で閉じる．Route A（exact パイプライン）の基盤．
 
 ### QSP-5 端点公式（GSLW Cor 8 moreover）（★）
 $P_\Phi(\pm1) = (\pm1)^d\prod_j e^{i\phi_j}$；$d$ 偶なら $P_\Phi(0) = e^{-i\sum_j(-1)^j\phi_j}$．$x=\pm1$ で $R$ が対角，$x=0$ で $R=\sigma_x$ になることから．
