@@ -124,3 +124,9 @@ example (E : QSVT.Encoding.HermitianEncoding ℋ) (h : l1 (chebCoeffs l) ≠ 0) 
 - `relaxedAutoImplicit = false`，Mathlib 標準 linter セットを有効化．
 - 公理（`axiom`）は使わない．定義と定理はモジュールを分ける．
 - `sorry` は使わない（CI の `no-sorry` ジョブで検出）．各テストファイルで `#print axioms` を監査する．
+
+## ライセンス
+
+Copyright (c) 2026 shosonoda.
+
+[Apache License 2.0](LICENSE) の下で公開しています．
